@@ -1,1 +1,38 @@
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
 
+spring:
+  codec:
+    max-in-memory-size: 10MB
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/ext_api_db
+    username: postgres
+    password: postgres
+  pool:
+    enabled: true
+    initial-size: 50
+    max-size: 100
+  jpa:
+    generate-ddl: true
+    open-in-view: true
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: update
+        jdbc.batch_size: 50
+
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: update
+              create-target: create.sql
+              create-source: metadata
+
+api:
+  external:
+    ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token=%s
+    stock-data-url: https://api.iex.cloud/v1/data/core/quote/%s?token=%s
+    token: pk_aed1ec86621241d8a4d3b85551a7e6dd

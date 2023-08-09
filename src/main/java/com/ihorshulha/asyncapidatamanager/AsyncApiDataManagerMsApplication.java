@@ -9,5 +9,4 @@ public class AsyncApiDataManagerMsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AsyncApiDataManagerMsApplication.class, args);
 	}
-
 }
