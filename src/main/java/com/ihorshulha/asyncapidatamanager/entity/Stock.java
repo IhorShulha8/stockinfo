@@ -4,18 +4,19 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "stock")
 public class Stock {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_sequence")
-    @SequenceGenerator(name = "stock_sequence", allocationSize = 1)
-    private long id;
+    @Column(name = "symbol")
+    private String symbol;
 
     @Column(name = "latest_price", nullable = false)
     private BigDecimal latestPrice;
@@ -29,10 +30,7 @@ public class Stock {
     @Column(name = "volume")
     private Integer volume;
 
+    @NaturalId
     @Column(name = "company_name", nullable = false)
     private String companyName;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
-    private Company company;
 }

@@ -6,13 +6,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-
 public interface StockMapper {
 
     Stock INSTANCE = Mappers.getMapper(Stock.class);
 
-    StockDto stockStockDTO(Stock company);
+    StockDto stockStockDTO(Stock stock);
 
-    Stock StockDtoToStock(StockDto company);
+    Stock stockDtoToStock(StockDto stockDto);
 
 }

@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "company")
 public class Company {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_sequence")
-    @SequenceGenerator(name = "company_sequence", allocationSize = 1)
-    private Long id;
-
-    @Column(name = "symbol", nullable = false)
+    @Column(name = "symbol")
     private String symbol;
+
+    @Column(name = "is_enabled")
+    private Boolean isEnabled;
 }

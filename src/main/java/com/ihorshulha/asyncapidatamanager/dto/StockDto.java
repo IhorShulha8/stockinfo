@@ -1,6 +1,8 @@
 package com.ihorshulha.asyncapidatamanager.dto;
 
+import org.springframework.data.annotation.Id;
+
 import java.math.BigDecimal;
 
-public record StockDto(String companyName, Integer volume, Integer previousVolume, BigDecimal latestPrice, BigDecimal change) {
+public record StockDto(@Id String symbol, BigDecimal latestPrice, BigDecimal change, Integer previousVolume, Integer volume, String companyName) {
 }

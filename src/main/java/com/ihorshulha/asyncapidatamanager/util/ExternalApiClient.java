@@ -1,7 +1,7 @@
 package com.ihorshulha.asyncapidatamanager.util;
 
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
-import com.ihorshulha.asyncapidatamanager.entity.Stock;
+import com.ihorshulha.asyncapidatamanager.dto.StockDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,29 +49,27 @@ public class ExternalApiClient {
         return companies;
     }
 
-    public Optional<Stock> getStockPrices(String symbol) {
-        Optional<Stock> result = Optional.empty();
+    public Optional<StockDto> getStock(String symbol) {
+        Optional<StockDto> result = Optional.empty();
         try {
-            ResponseEntity<Stock[]> response = restTemplate.exchange(String.format(stockPriceUrl, symbol, token), HttpMethod.GET, null, Stock[].class);
+            ResponseEntity<StockDto[]> response = restTemplate.exchange(getStockPriceUrl(symbol), HttpMethod.GET, null, StockDto[].class);
             if (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())) {
                 result = Optional.ofNullable(response.getBody()[0]);
-                logger.info("response - {}", result);
             }
         } catch (HttpStatusCodeException ex) {
             HttpStatusCode statusCode = ex.getStatusCode();
             if (statusCode.equals(HttpStatus.TOO_MANY_REQUESTS)) {
                 logger.info("status code is 429");
-                result = Optional.empty();
             }
         }
         return result;
     }
 
-    public String getRefDataUrl() {
+    private String getRefDataUrl() {
         return String.format(refDataUrl, token);
     }
 
-    public String getStockPriceUrl(CompanyDTO company) {
-        return String.format(stockPriceUrl, company.symbol(), token);
+    public String getStockPriceUrl(String symbol) {
+        return String.format(stockPriceUrl, symbol, token);
     }
 }

@@ -2,66 +2,95 @@ package com.ihorshulha.asyncapidatamanager.service;
 
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
 import com.ihorshulha.asyncapidatamanager.entity.Company;
+import com.ihorshulha.asyncapidatamanager.entity.Stock;
 import com.ihorshulha.asyncapidatamanager.mapper.CompanyMapper;
+import com.ihorshulha.asyncapidatamanager.mapper.StockMapper;
 import com.ihorshulha.asyncapidatamanager.repository.CompanyRepository;
+import com.ihorshulha.asyncapidatamanager.repository.StockRepository;
 import com.ihorshulha.asyncapidatamanager.util.ExternalApiClient;
+import com.ihorshulha.asyncapidatamanager.util.QueueClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
 public class ExternalDataService {
 
+    @Value("${service.numberOfCompanies}")
+    private Integer NUMBER_OF_COMPANIES;
     Logger logger = LoggerFactory.getLogger(ExternalDataService.class);
 
     private final ExternalApiClient apiClient;
+    private final QueueClient queueClient;
     private final CompanyRepository companyRepository;
-    private final CompanyMapper mapper;
+    private final StockRepository stockRepository;
+    private final CompanyMapper companyMapper;
+    private final StockMapper stockMapper;
 
-    protected static final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+    private List<Company> companies = new ArrayList<>();
 
     public void processingOfCompanyData() {
-        List<Company> companyEntities = new ArrayList<>();
-
-        queue.clear();
-        List<Company> list = apiClient.getCompanies().stream()
+        queueIsEmpty();
+        apiClient.getCompanies().stream()
                 .filter(CompanyDTO::isEnabled)
-                .limit(200)
+                .limit(NUMBER_OF_COMPANIES)
                 .map(companyDTO -> {
-                    Company company = mapper.companyDtoToCompany(companyDTO);
-                    companyEntities.add(company);
-                    queue.add(apiClient.getRefDataUrl());
+                    Company company = companyMapper.companyDtoToCompany(companyDTO);
+                    queueClient.getCompanyQueue().add(apiClient.getStockPriceUrl(companyDTO.symbol()));
                     return company;
-                }).toList();
+                })
+                .forEachOrdered(company -> companies.add(company));
 
-        Flux.from(companyRepository.saveAll(list))
-                .collectList()
-                .blockOptional();
+        Flux.from(companyRepository.saveAll(companies))
+                .then()
+                .subscribe(i -> logger.info(" was saved"));
     }
 
-    //    public void processingOfStocksData(List<com.example.entity.Company> companyEntities) {
-//        List<Stock> stockEntities = new ArrayList<>();
-//        companyEntities.forEach(company ->
-//                CompletableFuture.runAsync(() ->
-//                                apiClient.getStockPrices(company.getSymbol())
-//                                        .ifPresent(stockEntities::add))
-//                        .join());
-////        stockRepository.saveAll(stockEntities).flatMap(mapper.putDtoToEntity());
-//        logger.info("save all stock entities to DB");
-//    }
+    public void processingOfStocksData() {
+        ExecutorService executor = Executors.newCachedThreadPool();
 
-    @Scheduled(fixedDelay = 1000 * 360, initialDelay = 1000)
+        List<Stock> stocks = companies.stream()
+                .map(company -> CompletableFuture.supplyAsync(() -> apiClient.getStock(company.getSymbol()), executor))
+                .map(contentFuture -> contentFuture.thenApply(Optional::orElseThrow))
+                .map(stockDtoFuture -> stockDtoFuture.thenApply(stockMapper::stockDtoToStock))
+                .map(CompletableFuture::join)
+                .toList();
+        logger.info("stocks stored to list");
+        saveStocks(stocks);
+    }
+
+    private void saveStocks(List<Stock> stocks) {
+        Flux.from(stockRepository.saveAll(stocks))
+                .collectList()
+                .blockOptional();
+        logger.info("stocks stored to DB");
+    }
+
+    @Scheduled(fixedDelay = 1000 * 360, initialDelay = 100)
     public void onStartup() {
         companyRepository.deleteAll().blockOptional();
         processingOfCompanyData();
+    }
+
+    @Scheduled(fixedDelay = 5000, initialDelay = 5000)
+    public void getStockData() {
+        processingOfStocksData();
+        logger.info("stocks stored");
+    }
+
+    private void queueIsEmpty() {
+        if (!queueClient.getCompanyQueue().isEmpty()) queueClient.getCompanyQueue().clear();
     }
 }

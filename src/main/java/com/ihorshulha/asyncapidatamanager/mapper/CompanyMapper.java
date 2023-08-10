@@ -9,7 +9,9 @@ import org.mapstruct.factory.Mappers;
 public interface CompanyMapper {
 
     Company INSTANCE = Mappers.getMapper(Company.class);
+
     CompanyDTO companyToCompanyDTO(Company company);
+
     Company companyDtoToCompany(CompanyDTO company);
 
 }

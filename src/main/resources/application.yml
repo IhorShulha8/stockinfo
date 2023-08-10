@@ -17,17 +17,17 @@ spring:
   jpa:
     generate-ddl: true
     open-in-view: true
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
-        ddl-auto: update
+        ddl-auto: create
         jdbc.batch_size: 50
 
       javax:
         persistence:
           schema-generation:
             scripts:
-              action: update
+              action: create
               create-target: create.sql
               create-source: metadata
 
@@ -36,3 +36,6 @@ api:
     ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token=%s
     stock-data-url: https://api.iex.cloud/v1/data/core/quote/%s?token=%s
     token: pk_aed1ec86621241d8a4d3b85551a7e6dd
+
+service:
+  numberOfCompanies: 11

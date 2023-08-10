@@ -1,7 +1,7 @@
 package com.ihorshulha.asyncapidatamanager.dto;
 
 
-import jakarta.validation.constraints.NotEmpty;
+import org.springframework.data.annotation.Id;
 
-public record CompanyDTO(@NotEmpty Long id, String symbol, boolean isEnabled) {
+public record CompanyDTO(@Id String symbol, Boolean isEnabled) {
 }
