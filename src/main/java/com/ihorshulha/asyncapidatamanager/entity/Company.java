@@ -1,8 +1,11 @@
 package com.ihorshulha.asyncapidatamanager.entity;
 
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -28,9 +31,18 @@ public class Company implements Persistable<Integer>, Serializable {
     @Column("symbol")
     private String symbol;
 
+    @Transient
+    private boolean isNew = true;
+
     @Override
     public boolean isNew() {
-        return Objects.isNull(id);
+        return getId() == null;
+    }
+
+    @PrePersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
     }
 
     @Override

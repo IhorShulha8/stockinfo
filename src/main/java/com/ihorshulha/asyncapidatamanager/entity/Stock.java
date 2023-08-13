@@ -1,12 +1,12 @@
 package com.ihorshulha.asyncapidatamanager.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Persistable;
-import reactor.util.annotation.Nullable;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.relational.core.mapping.Column;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,7 +16,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "stock")
+@Table("stock")
 public class Stock implements Persistable<Integer>, Serializable {
 
     @Serial
@@ -25,16 +25,25 @@ public class Stock implements Persistable<Integer>, Serializable {
     @Id
     private Integer id;
 
+    @Column("symbol")
     private String symbol;
 
+    @Column("latest_price")
     private BigDecimal latestPrice;
 
+    @Column("delta_price")
+    private BigDecimal deltaPrice = BigDecimal.valueOf(0.00);
+
+    @Column("change")
     private BigDecimal change;
 
+    @Column("previous_volume")
     private Integer previousVolume;
 
+    @Column("volume")
     private Integer volume;
 
+    @Column("company_name")
     private String companyName;
 
     @Override
