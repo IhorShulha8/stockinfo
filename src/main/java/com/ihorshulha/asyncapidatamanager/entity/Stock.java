@@ -5,32 +5,58 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
+import org.springframework.data.domain.Persistable;
+import reactor.util.annotation.Nullable;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "stock")
-public class Stock {
+public class Stock implements Persistable<Integer>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "symbol")
+    private Integer id;
+
     private String symbol;
 
-    @Column(name = "latest_price", nullable = false)
     private BigDecimal latestPrice;
 
-    @Column(name = "change", nullable = false)
     private BigDecimal change;
 
-    @Column(name = "previous_volume", nullable = false)
     private Integer previousVolume;
 
-    @Column(name = "volume")
     private Integer volume;
 
-    @NaturalId
-    @Column(name = "company_name", nullable = false)
     private String companyName;
+
+    @Override
+    public boolean isNew() {
+        return Objects.isNull(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Stock stock = (Stock) o;
+
+        if (!id.equals(stock.id)) return false;
+        return symbol.equals(stock.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + symbol.hashCode();
+        return result;
+    }
 }

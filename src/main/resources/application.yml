@@ -1,7 +1,7 @@
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+#logging:
+#  level:
+#    io.r2dbc.postgresql.QUERY: DEBUG
+#    io.r2dbc.postgresql.PARAM: DEBUG
 
 spring:
   codec:
@@ -20,16 +20,8 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        ddl-auto: create
+        ddl-auto: update
         jdbc.batch_size: 50
-
-      javax:
-        persistence:
-          schema-generation:
-            scripts:
-              action: create
-              create-target: create.sql
-              create-source: metadata
 
 api:
   external:
@@ -38,4 +30,4 @@ api:
     token: pk_aed1ec86621241d8a4d3b85551a7e6dd
 
 service:
-  numberOfCompanies: 11
+  numberOfCompanies: 200

@@ -1,11 +1,13 @@
 package com.ihorshulha.asyncapidatamanager.repository;
 
 import com.ihorshulha.asyncapidatamanager.entity.Stock;
-import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 
 public interface CustomRepository {
 
-    Disposable updateOneStock(Stock stock);
+    Mono<Void> updateOneStock(Stock stock);
 
-    Disposable saveOneStock(Stock stock);
+    Mono <Void> saveOneStock(Stock stock);
+
+    Mono<Stock> getOne(String symbol);
 }

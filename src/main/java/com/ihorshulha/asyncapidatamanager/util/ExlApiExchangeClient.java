@@ -3,8 +3,7 @@ package com.ihorshulha.asyncapidatamanager.util;
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
 import com.ihorshulha.asyncapidatamanager.dto.StockDto;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -18,13 +17,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.ihorshulha.asyncapidatamanager.util.TooManyRequestException.ignoredException;
+import static com.ihorshulha.asyncapidatamanager.util.IgnoreRuntimeException.ignoredException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExternalApiClient {
-
-    Logger logger = LoggerFactory.getLogger(ExternalApiClient.class);
+public class ExlApiExchangeClient {
 
     @Value("${api.external.ref-data-url}")
     protected String refDataUrl;
@@ -37,34 +35,39 @@ public class ExternalApiClient {
 
     public List<CompanyDTO> getCompanies() {
         List<CompanyDTO> companies = new ArrayList<>();
-        ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {};
+        ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {
+        };
 
         ResponseEntity<List<CompanyDTO>> response =
                 restTemplate.exchange(String.format(refDataUrl, token), HttpMethod.GET, null, typeRef);
 
         if (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())) {
             companies = response.getBody();
+            log.debug("Response received status {} and number of companies {}", response.getStatusCode(), response.getBody().size());
         } else {
-            logger.info("Request for the list of companies returned HTTP status - " + response.getStatusCode());
+            log.debug("Response received status {}", response.getStatusCode());
         }
         return companies;
     }
 
-    public Optional<StockDto> getStock(String symbol) {
+    public Optional<StockDto> getOneCompanyStock(String task) {
         AtomicReference<Optional<StockDto>> result = new AtomicReference<>(Optional.empty());
+
         ignoredException(() -> {
-                    ResponseEntity<StockDto[]> response = restTemplate.exchange(getStockPriceUrl(symbol), HttpMethod.GET, null, StockDto[].class);
+                    ResponseEntity<StockDto[]> response = restTemplate.exchange(task, HttpMethod.GET, null, StockDto[].class);
+
                     if (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())) {
                         result.set(Optional.ofNullable(response.getBody()[0]));
+                        log.debug("Response received status {} and number of stock {}", response.getStatusCode(), response.getBody().length);
                     } else {
-                        logger.info("Request for the list of companies stocks returned HTTP status - " + response.getStatusCode());
+                        log.debug("Response received status {}", response.getStatusCode());
                     }
                 }
         );
         return result.get();
     }
 
-    private String getRefDataUrl() {
+    public String getRefDataUrl() {
         return String.format(refDataUrl, token);
     }
 
