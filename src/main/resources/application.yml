@@ -21,7 +21,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
-        jdbc.batch_size: 50
+        jdbc.batch_size: 20
 
 api:
   external:

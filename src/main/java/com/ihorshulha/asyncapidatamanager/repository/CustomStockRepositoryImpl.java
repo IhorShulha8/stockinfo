@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class CustomRepositoryImpl implements CustomRepository {
+public class CustomStockRepositoryImpl implements CustomStockRepository {
 
     private final ConnectionFactory connectionFactory;
 

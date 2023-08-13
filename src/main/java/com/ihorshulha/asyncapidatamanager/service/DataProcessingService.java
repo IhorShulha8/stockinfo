@@ -38,18 +38,6 @@ public class DataProcessingService {
     private final CompanyMapper companyMapper;
     private final StockMapper stockMapper;
 
-    @Scheduled(fixedDelay = 1000 * 360, initialDelay = 100)
-    public void onStartup() {
-        List<Company> companies = processingOfCompanyData();
-        saveCompanies(companies);
-    }
-
-    @Scheduled(fixedDelay = 5000, initialDelay = 5000)
-    public void getStockData() {
-        List<Stock> stocks = processingOfStocksData();
-        saveStocks(stocks);
-    }
-
     protected List<Company> processingOfCompanyData() {
         queueIsEmpty();
         return apiClient.getCompanies().stream()
@@ -75,12 +63,12 @@ public class DataProcessingService {
 
     protected void saveCompanies(List<Company> companies) {
         Flux.from(companyRepository.saveAll(companies)).subscribe();
-        log.info("storing companies was completed");
+        log.debug("storing companies was completed");
     }
 
     public void saveStocks(List<Stock> stocks) {
         Flux.from(stockRepository.saveAll(stocks)).subscribe();
-        log.info("storing stocks was completed");
+        log.debug("storing stocks was completed");
     }
 
     private void queueIsEmpty() {
