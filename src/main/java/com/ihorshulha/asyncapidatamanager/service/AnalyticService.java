@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -13,20 +16,24 @@ public class AnalyticService {
     private final StockRepository stockRepository;
 
     public void getTopFiveStockPrice() {
-        stockRepository.findTopFiveExpensiveStocks()
-                .subscribe(stocks -> {
-                    log.info("Top 5 companies with the expensive price of stock:");
-                    stocks.forEach(stock ->
-                            log.info("Price: {} Company: {}, ", stock.getLatestPrice(), stock.getCompanyName()));
-                });
+        AtomicInteger atomicInteger = new AtomicInteger();
+        CompletableFuture.runAsync(() -> {
+            stockRepository.findTopFiveExpensiveStocks()
+                    .subscribe(stock ->
+                            log.info(atomicInteger.incrementAndGet() + " of the top 5 most expensive stocks: " +
+                                            "price-{} company-{}",
+                                    stock.getLatestPrice(), stock.getCompanyName()));
+        }).join();
     }
 
     public void getTopFiveDeltaStocksPrice() {
-        stockRepository.findTopFiveHighestGrowth()
-                .subscribe(stocks -> {
-                    log.info("Top 5 companies with the highest price increase:");
-                    stocks.forEach(stock ->
-                            log.info("Price: {} Delta: {} Company: {}, ", stock.getLatestPrice(), stock.getDeltaPrice(), stock.getCompanyName()));
-                });
+        AtomicInteger atomicInteger = new AtomicInteger();
+        CompletableFuture.runAsync(() -> {
+            stockRepository.findTopFiveHighestGrowthStocks()
+                    .subscribe(stock ->
+                            log.info(atomicInteger.incrementAndGet() + " of the 5 fastest growing stocks: " +
+                                            "delta-{}, price-{}, company-{}",
+                                    stock.getDeltaPrice(), stock.getLatestPrice(), stock.getCompanyName()));
+        }).join();
     }
 }
