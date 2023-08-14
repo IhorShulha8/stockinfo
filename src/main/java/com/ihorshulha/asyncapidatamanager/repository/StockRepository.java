@@ -8,14 +8,13 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface StockRepository extends R2dbcRepository<Stock, Integer> {
 
-    @Query("SELECT * FROM stock WHERE symbol = $1")
-    Mono<Stock> findBySymbol(String symbol);
+    @Query("SELECT * FROM stock ORDER BY latest_price DESC, company_name LIMIT 5")
+    Flux<List<Stock>> findTopFiveExpensiveStocks();
 
-    @Query("SELECT CASE WHEN EXISTS (SELECT symbol FROM stock WHERE symbol = $1) THEN 1 ELSE 0 END")
-    Mono<Boolean> existsSymbol(String symbol);
-
-    @Query("select * from stock s where s.symbol = :symbol")
-    Mono<Stock> findBySymbol2(String symbol);
+    @Query("SELECT * FROM stock ORDER BY CASE WHEN delta_price IS NULL THEN 1 ELSE 0 END, delta_price DESC LIMIT 5")
+    Flux<List<Stock>> findTopFiveHighestGrowth();
 }

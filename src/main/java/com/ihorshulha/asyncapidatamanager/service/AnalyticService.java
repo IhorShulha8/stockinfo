@@ -1,6 +1,6 @@
 package com.ihorshulha.asyncapidatamanager.service;
 
-import com.ihorshulha.asyncapidatamanager.repository.CustomAnalyticRepository;
+import com.ihorshulha.asyncapidatamanager.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyticService {
 
-    private final CustomAnalyticRepository analyticRepository;
+    private final StockRepository stockRepository;
 
     public void getTopFiveStockPrice() {
-        analyticRepository.findTopFiveExpensiveStocks()
+        stockRepository.findTopFiveExpensiveStocks()
                 .subscribe(stocks -> {
                     log.info("Top 5 companies with the expensive price of stock:");
                     stocks.forEach(stock ->
@@ -22,7 +22,7 @@ public class AnalyticService {
     }
 
     public void getTopFiveDeltaStocksPrice() {
-        analyticRepository.findTopFiveHighestGrowth()
+        stockRepository.findTopFiveHighestGrowth()
                 .subscribe(stocks -> {
                     log.info("Top 5 companies with the highest price increase:");
                     stocks.forEach(stock ->

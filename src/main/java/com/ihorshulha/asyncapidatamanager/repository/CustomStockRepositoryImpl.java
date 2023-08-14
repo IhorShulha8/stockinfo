@@ -43,33 +43,12 @@ public class CustomStockRepositoryImpl implements CustomStockRepository {
                         .bind("$6", stock.getCompanyName())
                         .execute())
                 .subscribe();
-
-//        mono.flatMapMany(connection -> connection
-//                .createStatement("INSERT INTO person (id, first_name, last_name) VALUES ($1, $2, $3)")
-//                .bind("$1", 1)
-//                .bind("$2", "Walter")
-//                .bind("$3", "White")
-//                .execute());
         return Mono.empty();
     }
 
     @Override
     public Mono<Stock> getOne(String symbol) {
-
-//        return databaseClient.getConnectionFactory().create().subscribe()
-//                .execute().sql("SELECT name, sound FROM pets WHERE name = :name")
-//                .bind("symbol", symbol)
-//                .map((row, rowMetadata) -> new Stock(
-//                        row.("name", String.class),
-//                        row.get("sound", String.class))).one()
-//                .switchIfEmpty(Mono.error(new RuntimeException("Pet not found!")));
         return null;
     }
-//    public Mono<Pet> getOne(String name) {
-//        return databaseClient
-//                .select().from("pets")
-//                .matching(Criteria.where("pets").is(name))
-//                .as(Pet.class).fetch().one()
-//                .switchIfEmpty(Mono.error(new RuntimeException("Pet not found!")));
-//    }
+
 }

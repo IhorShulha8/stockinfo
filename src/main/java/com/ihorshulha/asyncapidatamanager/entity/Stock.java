@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.data.relational.core.mapping.Column;
 
@@ -32,7 +33,7 @@ public class Stock implements Persistable<Integer>, Serializable {
     private BigDecimal latestPrice;
 
     @Column("delta_price")
-    private BigDecimal deltaPrice = BigDecimal.valueOf(0.00);
+    private BigDecimal deltaPrice;
 
     @Column("change")
     private BigDecimal change;
