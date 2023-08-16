@@ -8,11 +8,11 @@ $$BEGIN
 END;
 $$;
 
-CREATE TRIGGER updateDeltaOnInserOrUpdateTrigger
-   BEFORE INSERT OR UPDATE OF latest_price ON stock
-   FOR EACH ROW
-   EXECUTE PROCEDURE deltaCalc();
-
+CREATE TRIGGER deltacalc
+               BEFORE INSERT OR UPDATE OR DELETE
+               ON stock
+               FOR EACH ROW
+               EXECUTE PROCEDURE deltacalc();
 
 
 -- triger stock_audit_trigger
