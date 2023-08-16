@@ -7,12 +7,11 @@ import com.ihorshulha.asyncapidatamanager.mapper.CompanyMapper;
 import com.ihorshulha.asyncapidatamanager.mapper.StockMapper;
 import com.ihorshulha.asyncapidatamanager.repository.CompanyRepository;
 import com.ihorshulha.asyncapidatamanager.repository.StockRepository;
-import com.ihorshulha.asyncapidatamanager.util.ExlApiExchangeClient;
+import com.ihorshulha.asyncapidatamanager.util.ExApiExchangeClient;
 import com.ihorshulha.asyncapidatamanager.util.QueueClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -31,7 +30,7 @@ public class DataProcessingService {
     @Value("${service.numberOfCompanies}")
     private Integer NUMBER_OF_COMPANIES;
 
-    private final ExlApiExchangeClient apiClient;
+    private final ExApiExchangeClient apiClient;
     private final QueueClient queueClient;
     private final CompanyRepository companyRepository;
     private final StockRepository stockRepository;
@@ -39,7 +38,6 @@ public class DataProcessingService {
     private final StockMapper stockMapper;
 
     protected List<Company> processingOfCompanyData() {
-        queueIsEmpty();
         return apiClient.getCompanies().stream()
                 .filter(CompanyDTO::isEnabled)
                 .limit(NUMBER_OF_COMPANIES)
@@ -66,12 +64,8 @@ public class DataProcessingService {
         log.debug("storing companies was completed");
     }
 
-    public void saveStocks(List<Stock> stocks) {
+    protected void saveStocks(List<Stock> stocks) {
         Flux.from(stockRepository.saveAll(stocks)).subscribe();
         log.debug("storing stocks was completed");
-    }
-
-    private void queueIsEmpty() {
-        if (!queueClient.getCompanyQueue().isEmpty()) queueClient.getCompanyQueue().clear();
     }
 }

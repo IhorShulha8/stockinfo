@@ -1,0 +1,4 @@
+service:
+  numberOfCompanies: 3
+scheduling:
+  enable: false

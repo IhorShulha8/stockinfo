@@ -22,7 +22,7 @@ import static com.ihorshulha.asyncapidatamanager.util.IgnoreRuntimeException.ign
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExlApiExchangeClient {
+public class ExApiExchangeClient {
 
     @Value("${api.external.ref-data-url}")
     protected String refDataUrl;
@@ -35,8 +35,7 @@ public class ExlApiExchangeClient {
 
     public List<CompanyDTO> getCompanies() {
         List<CompanyDTO> companies = new ArrayList<>();
-        ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {
-        };
+        ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {};
 
         ResponseEntity<List<CompanyDTO>> response =
                 restTemplate.exchange(String.format(refDataUrl, token), HttpMethod.GET, null, typeRef);
@@ -65,10 +64,6 @@ public class ExlApiExchangeClient {
                 }
         );
         return result.get();
-    }
-
-    public String getRefDataUrl() {
-        return String.format(refDataUrl, token);
     }
 
     public String getStockPriceUrl(String symbol) {
