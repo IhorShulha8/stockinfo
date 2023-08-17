@@ -1,5 +1,7 @@
 package com.ihorshulha.asyncapidatamanager.entity;
 
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,39 +20,32 @@ import java.io.Serial;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "company")
-public class Company implements Persistable<String>, Serializable {
+public class Company implements Persistable<Integer>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column("cik")
-    private String cik;
+    @Column("id")
+    private Integer id;
 
     @Column("symbol")
     private String symbol;
 
-//    @Column("is_enabled")
-//    private Boolean isEnabled;
-
-    @Override
-    public String getId() {
-        return this.cik;
-    }
+    @Transient
+    private boolean isNew = true;
 
     @Override
     public boolean isNew() {
-        return !cik.isBlank();
+//        return Objects.isNull(id);
+        return getId() == null;
     }
 
-//    @Transient
-//    private boolean newSymbol;
-
-//    @Transient
-//    public Company setAsNew() {
-//        this.newSymbol = true;
-//        return this;
-//    }
+    @PrePersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -59,13 +54,13 @@ public class Company implements Persistable<String>, Serializable {
 
         Company company = (Company) o;
 
-        if (!cik.equals(company.cik)) return false;
+        if (!id.equals(company.id)) return false;
         return symbol.equals(company.symbol);
     }
 
     @Override
     public int hashCode() {
-        int result = cik.hashCode();
+        int result = id.hashCode();
         result = 31 * result + symbol.hashCode();
         return result;
     }
