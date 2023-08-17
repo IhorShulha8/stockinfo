@@ -1,4 +1,4 @@
-package com.ihorshulha.asyncapidatamanager.util;
+package com.ihorshulha.asyncapidatamanager.client;
 
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
 import com.ihorshulha.asyncapidatamanager.dto.StockDto;
@@ -49,11 +49,11 @@ public class ExApiExchangeClient {
         return companies;
     }
 
-    public Optional<StockDto> getOneCompanyStock(String task) {
+    public Optional<StockDto> getOneCompanyStock(String url) {
         AtomicReference<Optional<StockDto>> result = new AtomicReference<>(Optional.empty());
 
         ignoredException(() -> {
-                    ResponseEntity<StockDto[]> response = restTemplate.exchange(task, HttpMethod.GET, null, StockDto[].class);
+                    ResponseEntity<StockDto[]> response = restTemplate.exchange(url, HttpMethod.GET, null, StockDto[].class);
 
                     if (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())) {
                         result.set(Optional.ofNullable(response.getBody()[0]));

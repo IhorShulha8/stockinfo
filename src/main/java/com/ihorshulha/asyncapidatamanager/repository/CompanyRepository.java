@@ -1,10 +1,9 @@
 package com.ihorshulha.asyncapidatamanager.repository;
 
 import com.ihorshulha.asyncapidatamanager.entity.Company;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
-public interface CompanyRepository extends ReactiveCrudRepository<Company, Integer> {
+@Repository
+public interface CompanyRepository extends ReactiveCrudRepository<Company, String> {
 }

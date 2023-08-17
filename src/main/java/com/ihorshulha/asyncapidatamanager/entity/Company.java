@@ -1,8 +1,7 @@
 package com.ihorshulha.asyncapidatamanager.entity;
 
-import jakarta.persistence.PostLoad;
-import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Transient;
@@ -11,39 +10,47 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
+import java.io.Serial;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "company")
-public class Company implements Persistable<Integer>, Serializable {
+public class Company implements Persistable<String>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column("id")
-    private Integer id;
+    @Column("cik")
+    private String cik;
 
     @Column("symbol")
     private String symbol;
 
-    @Transient
-    private boolean isNew = true;
+//    @Column("is_enabled")
+//    private Boolean isEnabled;
+
+    @Override
+    public String getId() {
+        return this.cik;
+    }
 
     @Override
     public boolean isNew() {
-        return getId() == null;
+        return !cik.isBlank();
     }
 
-    @PrePersist
-    @PostLoad
-    void markNotNew() {
-        this.isNew = false;
-    }
+//    @Transient
+//    private boolean newSymbol;
+
+//    @Transient
+//    public Company setAsNew() {
+//        this.newSymbol = true;
+//        return this;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -52,13 +59,13 @@ public class Company implements Persistable<Integer>, Serializable {
 
         Company company = (Company) o;
 
-        if (!id.equals(company.id)) return false;
+        if (!cik.equals(company.cik)) return false;
         return symbol.equals(company.symbol);
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
+        int result = cik.hashCode();
         result = 31 * result + symbol.hashCode();
         return result;
     }

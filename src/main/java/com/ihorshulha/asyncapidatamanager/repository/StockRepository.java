@@ -4,11 +4,13 @@ package com.ihorshulha.asyncapidatamanager.repository;
 import com.ihorshulha.asyncapidatamanager.entity.Stock;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 
-public interface StockRepository extends R2dbcRepository<Stock, Integer> {
+@Repository
+public interface StockRepository extends R2dbcRepository<Stock, String> {
 
     @Query("SELECT * FROM stock ORDER BY latest_price DESC, company_name LIMIT 5")
     Flux<Stock> findTopFiveExpensiveStocks();

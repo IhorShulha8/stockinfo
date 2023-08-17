@@ -1,6 +1,8 @@
 package com.ihorshulha.asyncapidatamanager.service;
 
 import com.ihorshulha.asyncapidatamanager.BaseAbstractTest;
+import com.ihorshulha.asyncapidatamanager.job.AnalyticDataJob;
+import com.ihorshulha.asyncapidatamanager.job.ProcessDataJob;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,9 +15,11 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(properties = "scheduling.enabled=true")
-public class ScheduleServiceTest extends BaseAbstractTest {
+public class JobsTest extends BaseAbstractTest {
     @SpyBean
-    private ScheduleService scheduleService;
+    private AnalyticDataJob analyticsDataJob;
+    @SpyBean
+    private ProcessDataJob processingDataJob;
     @MockBean
     private DataProcessingService dataProcessingService;
     @MockBean
@@ -26,27 +30,27 @@ public class ScheduleServiceTest extends BaseAbstractTest {
     public void scheduleOnStartupTest() {
         await()
                 .pollDelay(1000, TimeUnit.MILLISECONDS)
-                .untilAsserted(() -> verify(scheduleService, atMostOnce()).onStartup());
+                .untilAsserted(() -> verify(processingDataJob, atMostOnce()).onStartupProcessingCompanyDataJob());
     }
 
     @Test
     public void scheduleGetStockDataTest() {
         await()
                 .pollDelay(6, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(scheduleService, atMost(1)).getStockData());
+                .untilAsserted(() -> verify(processingDataJob, atMost(1)).runProcessingStockDataJob());
     }
 
     @Test
     public void scheduleOnGetAnalyticDataTest() {
         await()
                 .pollDelay(1000, TimeUnit.MILLISECONDS)
-                .untilAsserted(() -> verify(scheduleService, atLeast(1)).getAnalyticData());
+                .untilAsserted(() -> verify(analyticsDataJob, atLeast(1)).runAnalyticsJob());
     }
 
     @Test
     public void callOnStartupTest(){
 //        When
-        scheduleService.onStartup();
+        processingDataJob.onStartupProcessingCompanyDataJob();
 //        Then
         verify(dataProcessingService, atLeastOnce()).processingOfCompanyData();
         verify(dataProcessingService, atLeastOnce()).saveCompanies(anyList());
@@ -55,7 +59,7 @@ public class ScheduleServiceTest extends BaseAbstractTest {
     @Test
     public void callGetStockDataTest(){
 //        When
-        scheduleService.getStockData();
+        processingDataJob.runProcessingStockDataJob();
 //        Then
         verify(dataProcessingService, atLeastOnce()).processingOfStocksData();
         verify(dataProcessingService, atLeastOnce()).saveStocks(anyList());
@@ -64,7 +68,7 @@ public class ScheduleServiceTest extends BaseAbstractTest {
     @Test
     public void callGetAnalyticDataTest(){
 //        When
-        scheduleService.getAnalyticData();
+        analyticsDataJob.runAnalyticsJob();
 //        Then
         verify(analyticService, atLeastOnce()).getTopFiveStockPrice();
         verify(analyticService, atLeastOnce()).getTopFiveDeltaStocksPrice();

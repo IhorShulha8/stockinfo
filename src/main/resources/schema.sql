@@ -3,13 +3,13 @@
 --company
 DROP TABLE IF EXISTS company;
 create TABLE IF NOT EXISTS company (
-    id serial PRIMARY KEY,
+    cik VARCHAR(100) PRIMARY KEY,
     symbol VARCHAR(255) not null
     );
 
 --stock
 create TABLE IF NOT EXISTS stock (
-    id serial PRIMARY KEY,
+    cik VARCHAR(100) PRIMARY KEY,
     symbol VARCHAR(255) null null,
     change NUMERIC(38,2),
     latest_price NUMERIC(38,2)NOT NULL,
@@ -21,7 +21,7 @@ create TABLE IF NOT EXISTS stock (
 
 --stock_audit_log
 CREATE TABLE IF NOT EXISTS stock_audit_log (
-    id int8 NOT NULL,
+    cik VARCHAR(100) PRIMARY KEY,
     symbol VARCHAR(255) NOT NULL,
     old_row_data jsonb,
     new_row_data jsonb,

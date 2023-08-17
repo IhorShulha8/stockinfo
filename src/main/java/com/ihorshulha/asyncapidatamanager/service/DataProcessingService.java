@@ -1,25 +1,24 @@
 package com.ihorshulha.asyncapidatamanager.service;
 
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
+import com.ihorshulha.asyncapidatamanager.dto.StockDto;
 import com.ihorshulha.asyncapidatamanager.entity.Company;
 import com.ihorshulha.asyncapidatamanager.entity.Stock;
 import com.ihorshulha.asyncapidatamanager.mapper.CompanyMapper;
 import com.ihorshulha.asyncapidatamanager.mapper.StockMapper;
 import com.ihorshulha.asyncapidatamanager.repository.CompanyRepository;
 import com.ihorshulha.asyncapidatamanager.repository.StockRepository;
-import com.ihorshulha.asyncapidatamanager.util.ExApiExchangeClient;
+import com.ihorshulha.asyncapidatamanager.client.ExApiExchangeClient;
 import com.ihorshulha.asyncapidatamanager.util.QueueClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -37,7 +36,7 @@ public class DataProcessingService {
     private final CompanyMapper companyMapper;
     private final StockMapper stockMapper;
 
-    protected List<Company> processingOfCompanyData() {
+    public List<Company> processingOfCompanyData() {
         return apiClient.getCompanies().stream()
                 .filter(CompanyDTO::isEnabled)
                 .limit(NUMBER_OF_COMPANIES)
@@ -49,23 +48,47 @@ public class DataProcessingService {
     }
 
     public List<Stock> processingOfStocksData() {
-        ExecutorService executor = Executors.newCachedThreadPool();
-
-        return queueClient.getCompanyQueue().stream()
-                .map(task -> CompletableFuture.supplyAsync(() -> apiClient.getOneCompanyStock(queueClient.takeUrl()), executor))
-                .map(contentFuture -> contentFuture.thenApply(Optional::orElseThrow))
-                .map(stockDtoFuture -> stockDtoFuture.thenApply(stockMapper::stockDtoToStock))
-                .map(CompletableFuture::join)
-                .toList();
+        ArrayList<Stock> list = new ArrayList<>();
+        startThreadLogger(Thread.currentThread());
+        List<Stock> oList = queueClient.getCompanyQueue().stream()
+                .map(task ->
+                        CompletableFuture.supplyAsync(() -> processData(list)).join()).toList();
+        System.out.println(oList);
+        finishThreadLogger(Thread.currentThread());
+        return list;
     }
 
-    protected void saveCompanies(List<Company> companies) {
-        Flux.from(companyRepository.saveAll(companies)).subscribe();
+    private Stock processData(ArrayList<Stock> list) {
+        String url = queueClient.takeUrl();
+        Optional<StockDto> stockDtoOptional = apiClient.getOneCompanyStock(url);
+        StockDto stockDto = stockDtoOptional.orElseThrow();
+        Stock stock = stockMapper.stockDtoToStock(stockDto);
+        list.add(stock);
+        finishThreadLogger(Thread.currentThread());
+        return stock;
+    }
+
+    private void finishThreadLogger(Thread thread) {
+        long finishTime = System.currentTimeMillis();
+        String nameThread = Thread.currentThread().getName();
+        String state = Thread.currentThread().getState().toString();
+        log.info("Thread {} finished at {} and state {}", nameThread, finishTime, state);
+    }
+
+    private void startThreadLogger(Thread thread) {
+        long startTime = System.currentTimeMillis();
+        String nameThread = Thread.currentThread().getName();
+        String state = Thread.currentThread().getState().toString();
+        log.info("Thread {} started at {} and state {}", nameThread, startTime, state);
+    }
+
+    public void saveCompanies(List<Company> companies) {
+        companyRepository.saveAll(companies).subscribe();
         log.debug("storing companies was completed");
     }
 
-    protected void saveStocks(List<Stock> stocks) {
-        Flux.from(stockRepository.saveAll(stocks)).subscribe();
-        log.debug("storing stocks was completed");
+    public void saveStocks(List<Stock> stocks) {
+        stockRepository.saveAll(stocks)
+                .subscribe(stock -> log.debug("storing stocks was completed"));
     }
 }

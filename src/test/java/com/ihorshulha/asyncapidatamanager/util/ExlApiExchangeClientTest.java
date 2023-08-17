@@ -1,6 +1,7 @@
 package com.ihorshulha.asyncapidatamanager.util;
 
 import com.ihorshulha.asyncapidatamanager.BaseAbstractTest;
+import com.ihorshulha.asyncapidatamanager.client.ExApiExchangeClient;
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
