@@ -1,4 +1,4 @@
 service:
-  numberOfCompanies: 3
+  number-of-companies: 3
 scheduling:
   enable: false
