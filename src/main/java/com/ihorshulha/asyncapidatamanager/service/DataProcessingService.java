@@ -7,7 +7,7 @@ import com.ihorshulha.asyncapidatamanager.entity.Stock;
 import com.ihorshulha.asyncapidatamanager.mapper.CompanyMapper;
 import com.ihorshulha.asyncapidatamanager.mapper.StockMapper;
 import com.ihorshulha.asyncapidatamanager.client.ExApiExchangeClient;
-import com.ihorshulha.asyncapidatamanager.util.QueueClient;
+import com.ihorshulha.asyncapidatamanager.client.QueueClient;
 import com.ihorshulha.asyncapidatamanager.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
