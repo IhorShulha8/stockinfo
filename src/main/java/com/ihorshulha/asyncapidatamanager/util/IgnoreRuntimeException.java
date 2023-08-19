@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 @FunctionalInterface
 public interface IgnoreRuntimeException {
 
-    Logger logger = LoggerFactory.getLogger(IgnoreRuntimeException.class);
+    Logger log = LoggerFactory.getLogger(IgnoreRuntimeException.class);
 
     void run() throws RuntimeException;
 
@@ -14,7 +14,7 @@ public interface IgnoreRuntimeException {
         try {
             exception.run();
         } catch (RuntimeException ex) {
-            logger.error(ex.getMessage());
+            log.error(ex.getMessage());
         }
     }
 }

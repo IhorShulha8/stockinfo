@@ -3,6 +3,7 @@ package com.ihorshulha.asyncapidatamanager.service;
 import com.ihorshulha.asyncapidatamanager.BaseAbstractTest;
 import com.ihorshulha.asyncapidatamanager.job.AnalyticDataJob;
 import com.ihorshulha.asyncapidatamanager.job.ProcessDataJob;
+import com.ihorshulha.asyncapidatamanager.repository.CustomRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,6 +25,8 @@ public class JobsTest extends BaseAbstractTest {
     private DataProcessingService dataProcessingService;
     @MockBean
     private AnalyticService analyticService;
+    @MockBean
+    private CustomRepositoryImpl customRepository;
 
 
     @Test
@@ -53,7 +56,7 @@ public class JobsTest extends BaseAbstractTest {
         processingDataJob.onStartupProcessingCompanyDataJob();
 //        Then
         verify(dataProcessingService, atLeastOnce()).processingOfCompanyData();
-        verify(dataProcessingService, atLeastOnce()).saveCompanies(anyList());
+        verify(customRepository, atLeastOnce()).saveCompanies(anyList());
     }
 
     @Test
@@ -62,7 +65,7 @@ public class JobsTest extends BaseAbstractTest {
         processingDataJob.runProcessingStockDataJob();
 //        Then
         verify(dataProcessingService, atLeastOnce()).processingOfStocksData();
-        verify(dataProcessingService, atLeastOnce()).saveStocks(anyList());
+        verify(customRepository, atLeastOnce()).saveStocks(anyList());
     }
 
     @Test

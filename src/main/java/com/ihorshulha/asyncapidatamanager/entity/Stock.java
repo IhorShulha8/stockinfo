@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.data.relational.core.mapping.Column;
@@ -12,20 +13,21 @@ import org.springframework.data.relational.core.mapping.Column;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("stock")
-public class Stock implements Persistable<String>, Serializable {
+public class Stock implements Persistable<Long>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column("cik")
-    private String cik;
+    @Column("id")
+    private Long id;
 
     @Column("symbol")
     private String symbol;
@@ -49,13 +51,16 @@ public class Stock implements Persistable<String>, Serializable {
     private String companyName;
 
     @Override
-    public String getId() {
-        return this.cik;
+    public Long getId() {
+        return id;
     }
+
+    @Transient
+    private boolean isNew = true;
 
     @Override
     public boolean isNew() {
-        return !cik.isBlank();
+        return null == getId();
     }
 
     @Override
@@ -65,13 +70,13 @@ public class Stock implements Persistable<String>, Serializable {
 
         Stock stock = (Stock) o;
 
-        if (!cik.equals(stock.cik)) return false;
+        if (!Objects.equals(id, stock.id)) return false;
         return symbol.equals(stock.symbol);
     }
 
     @Override
     public int hashCode() {
-        int result = cik.hashCode();
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + symbol.hashCode();
         return result;
     }

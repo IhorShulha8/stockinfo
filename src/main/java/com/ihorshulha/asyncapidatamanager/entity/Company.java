@@ -1,7 +1,5 @@
 package com.ihorshulha.asyncapidatamanager.entity;
 
-import jakarta.persistence.PostLoad;
-import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,14 +35,7 @@ public class Company implements Persistable<Integer>, Serializable {
 
     @Override
     public boolean isNew() {
-//        return Objects.isNull(id);
-        return getId() == null;
-    }
-
-    @PrePersist
-    @PostLoad
-    void markNotNew() {
-        this.isNew = false;
+        return null == getId();
     }
 
     @Override

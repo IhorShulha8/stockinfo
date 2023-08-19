@@ -18,7 +18,7 @@ public class AnalyticService {
     public void getTopFiveStockPrice() {
         AtomicInteger atomicInteger = new AtomicInteger();
         CompletableFuture.runAsync(() -> {
-            stockRepository.findTopFiveExpensiveStocks()
+            stockRepository.findTop5ExpensiveStocks()
                     .subscribe(stock ->
                             log.info(atomicInteger.incrementAndGet() + " of the top 5 most expensive stocks: " +
                                             "price-{} company-{}",
@@ -29,7 +29,7 @@ public class AnalyticService {
     public void getTopFiveDeltaStocksPrice() {
         AtomicInteger atomicInteger = new AtomicInteger();
         CompletableFuture.runAsync(() -> {
-            stockRepository.findTopFiveHighestGrowthStocks()
+            stockRepository.findTop5HighestDeltaPrice()
                     .subscribe(stock ->
                             log.info(atomicInteger.incrementAndGet() + " of the 5 fastest growing stocks: " +
                                             "delta-{}, price-{}, company-{}",

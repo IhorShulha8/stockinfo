@@ -1,29 +1,35 @@
 package com.ihorshulha.asyncapidatamanager.config;
 
 import io.r2dbc.spi.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
-import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.transaction.ReactiveTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
-@EnableTransactionManagement
+
 @Configuration
 @EnableR2dbcRepositories
 public class ConfigurationService {
 
-    @Autowired
-    private ConnectionFactory connectionFactory;
+    @Value("${api.database.host}")
+    protected String host;
+    @Value("${api.database.port}")
+    protected int port;
+    @Value("${api.database.name}")
+    protected String name;
+    @Value("${api.database.username}")
+    protected String username;
+    @Value("${api.database.password}")
+    protected String password;
 
     @Bean
     ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
         initializer.setDatabasePopulator(new ResourceDatabasePopulator(new ClassPathResource("schema.sql")));
@@ -31,8 +37,11 @@ public class ConfigurationService {
     }
 
     @Bean
-    public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
-        return DatabaseClient.create(connectionFactory);
+    DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
+        return DatabaseClient.builder()
+                .connectionFactory(connectionFactory)
+                .namedParameters(true)
+                .build();
     }
 
     @Bean
@@ -40,25 +49,19 @@ public class ConfigurationService {
         return new RestTemplate();
     }
 
-    @Bean
-    ReactiveTransactionManager transactionManager(ConnectionFactory connectionFactory) {
-        return new R2dbcTransactionManager(connectionFactory);
-    }
-
-    //    @Bean
+//    @Bean
 //    public ConnectionFactory connectionFactory() {
-//        return ConnectionFactories.get("r2dbc:postgresql://localhost:5432/ext_api_db");
-//        return new PostgresqlConnectionFactory(
-//                PostgresqlConnectionConfiguration.builder()
-//                        .host("localhost")
-//                        .database("ext_api_db")
-//                        .username("postgresql")
-//                        .password("postgresql")
-//                        .codecRegistrar((connection, allocator, registry) -> {
-//                            registry.addFirst(new StringCodec(allocator, PostgresqlObjectId.UNSPECIFIED, PostgresqlObjectId.VARCHAR_ARRAY));
-//                            return Mono.empty();
-//                        })
-//                        .build());
+////        return ConnectionFactories.get("r2dbc:postgresql://%s:%s@%s:%s/%s".formatted(username, password, host, port, name));
+//
+//        return ConnectionFactories.get(ConnectionFactoryOptions.builder()
+//                .option(DRIVER, "postgresql")
+//                .option(HOST, host)
+//                .option(PORT, 5432)  // optional, defaults to 5432
+//                .option(USER, username)
+//                .option(PASSWORD, password)
+//                .option(DATABASE, name)  // optional
+//                .build());
+//
 //    }
 }
 
