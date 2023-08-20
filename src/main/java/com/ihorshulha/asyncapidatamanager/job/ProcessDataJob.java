@@ -19,15 +19,15 @@ public class ProcessDataJob {
 
     @Scheduled(fixedDelay = 3600 * 1000, initialDelay = 1)
     public void onStartupProcessingCompanyDataJob() {
-        CompletableFuture.supplyAsync(dataProcessingService::processingOfCompanyData)
+        CompletableFuture.supplyAsync(dataProcessingService::getCompaniesData)
                 .thenAccept(customRepository::saveCompanies)
                 .join();
     }
 
     @Scheduled(fixedDelay = 5000, initialDelay = 1000)
     public void runProcessingStockDataJob() {
-        CompletableFuture.supplyAsync(dataProcessingService::processingOfStocksData)
-                .thenAcceptAsync(customRepository::saveStocks)
+        CompletableFuture.supplyAsync(dataProcessingService::getStocksData)
+                .thenAccept(customRepository::saveStocks)
                 .join();
     }
 }

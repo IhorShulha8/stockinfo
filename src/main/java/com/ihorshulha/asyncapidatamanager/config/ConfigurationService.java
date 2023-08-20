@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
@@ -42,6 +43,11 @@ public class ConfigurationService {
                 .connectionFactory(connectionFactory)
                 .namedParameters(true)
                 .build();
+    }
+
+    @Bean
+    public R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory connectionFactory) {
+        return new R2dbcEntityTemplate(connectionFactory);
     }
 
     @Bean

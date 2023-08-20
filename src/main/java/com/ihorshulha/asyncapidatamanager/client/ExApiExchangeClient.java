@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.ihorshulha.asyncapidatamanager.util.IgnoreRuntimeException.ignoredException;
@@ -66,7 +63,7 @@ public class ExApiExchangeClient {
         return result.get();
     }
 
-    public String getStockPriceUrl(String symbol) {
+    public String getStocksUrl(String symbol) {
         return String.format(stockPriceUrl, symbol, token);
     }
 }

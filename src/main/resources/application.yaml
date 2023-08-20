@@ -1,7 +1,9 @@
+
 #logging:
 #  level:
-#    io.r2dbc.postgresql.QUERY: DEBUG
-#    io.r2dbc.postgresql.PARAM: DEBUG
+#    org:
+#      springframework:
+#        r2dbc: DEBUG
 
 aspect:
   enabled: true
@@ -23,7 +25,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
-        jdbc.batch_size: 5
+        jdbc.batch_size: 50
 
 api:
   external:
@@ -38,4 +40,4 @@ api:
     password: postgres
 
 service:
-  number-of-companies: 7
+  number-of-companies: 200

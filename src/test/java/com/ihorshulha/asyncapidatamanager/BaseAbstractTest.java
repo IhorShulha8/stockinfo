@@ -6,6 +6,7 @@ import com.ihorshulha.asyncapidatamanager.client.QueueClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 
 @SpringBootTest(properties = "scheduling.enabled=false")
@@ -18,6 +19,6 @@ public abstract class BaseAbstractTest {
     @Autowired
     public StockMapper stockMapper;
 
-    @Autowired
+    @SpyBean
     public QueueClient queueClient;
 }

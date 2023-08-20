@@ -23,19 +23,17 @@ public class AnalyticServiceTest extends BaseAbstractTest {
 
     @Test
     void whenGetTopFiveStockPriceIsSuccessful() {
-//        When
         when(stockRepository.findTop5ExpensiveStocks()).thenReturn(Flux.just(new Stock()));
         analyticService.getTopFiveStockPrice();
-//        Then
+
         verify(stockRepository, atLeastOnce()).findTop5ExpensiveStocks();
     }
 
     @Test
     void whenGetTopFiveDeltaStockPriceIsSuccessful() {//        Given
-//        When
         when(stockRepository.findTop5HighestDeltaPrice()).thenReturn(Flux.just(new Stock()));
         analyticService.getTopFiveDeltaStocksPrice();
-//        Then
+
         verify(stockRepository, atLeastOnce()).findTop5HighestDeltaPrice();
     }
 }

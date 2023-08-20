@@ -52,27 +52,24 @@ public class JobsTest extends BaseAbstractTest {
 
     @Test
     public void callOnStartupTest(){
-//        When
         processingDataJob.onStartupProcessingCompanyDataJob();
-//        Then
-        verify(dataProcessingService, atLeastOnce()).processingOfCompanyData();
+
+        verify(dataProcessingService, atLeastOnce()).getCompaniesData();
         verify(customRepository, atLeastOnce()).saveCompanies(anyList());
     }
 
     @Test
     public void callGetStockDataTest(){
-//        When
         processingDataJob.runProcessingStockDataJob();
-//        Then
-        verify(dataProcessingService, atLeastOnce()).processingOfStocksData();
+
+        verify(dataProcessingService, atLeastOnce()).getStocksData();
         verify(customRepository, atLeastOnce()).saveStocks(anyList());
     }
 
     @Test
     public void callGetAnalyticDataTest(){
-//        When
         analyticsDataJob.runAnalyticsJob();
-//        Then
+
         verify(analyticService, atLeastOnce()).getTopFiveStockPrice();
         verify(analyticService, atLeastOnce()).getTopFiveDeltaStocksPrice();
     }

@@ -10,9 +10,11 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface StockRepository extends R2dbcRepository<Stock, Long> {
 
-    @Query("SELECT * FROM stock ORDER BY latest_price DESC, company_name ASC LIMIT 5")
+    @Query("SELECT DISTINCT symbol, latest_price, company_name FROM stock ORDER BY latest_price DESC, company_name ASC LIMIT 5;")
     Flux<Stock> findTop5ExpensiveStocks();
 
-    @Query("SELECT * FROM stock ORDER BY CASE WHEN delta_price IS NULL THEN 1 ELSE 0 END, delta_price DESC, company_name ASC LIMIT 5")
+    @Query("SELECT DISTINCT symbol, latest_price, change, company_name FROM stock ORDER BY change DESC, company_name ASC LIMIT 5;")
     Flux<Stock> findTop5HighestDeltaPrice();
+
+//    Flux<Stock> findTop5DistinctSymbolAndLatestPriceAndChangeAndCompanyNameOrderByChangeDESC();
 }
