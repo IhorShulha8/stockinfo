@@ -18,7 +18,7 @@ public class QueueClient {
     public void putToQueue(String task) {
         CompletableFuture.runAsync(() -> {
             try {
-                companyQueue.put(String.valueOf(task));
+                companyQueue.put(task);
                 log.debug("Queue client put task: {}", task);
             } catch (InterruptedException e) {
                 log.error(e.getMessage());

@@ -32,7 +32,6 @@ public class ExApiExchangeClient {
     private final RestTemplate restTemplate;
 
     public List<CompanyDTO> getCompanies() {
-        List<CompanyDTO> companies = new ArrayList<>();
         ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {};
 
         return Optional.of(restTemplate.exchange(String.format(refDataUrl, token), HttpMethod.GET, null, typeRef))
