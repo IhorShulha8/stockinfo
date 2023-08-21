@@ -19,7 +19,7 @@ api:
   external:
     ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token=%s
     stock-data-url: https://api.iex.cloud/v1/data/core/quote/%s?token=%s
-    token: pk_02f32cc69c4e450089b05510a54b30e9
+    token: pk_0b2ae7889e7e4d9ca682e041765800e0
   database:
     host: localhost
     port: 5432
