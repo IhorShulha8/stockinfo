@@ -15,6 +15,4 @@ public interface StockRepository extends R2dbcRepository<Stock, Long> {
 
     @Query("SELECT DISTINCT symbol, latest_price, change, company_name FROM stock ORDER BY change DESC, company_name ASC LIMIT 5;")
     Flux<Stock> findTop5HighestDeltaPrice();
-
-//    Flux<Stock> findTop5DistinctSymbolAndLatestPriceAndChangeAndCompanyNameOrderByChangeDESC();
 }

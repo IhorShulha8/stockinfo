@@ -6,7 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CompanyRepository extends ReactiveCrudRepository<Company, Integer> {
-
-//    @Query("SELECT DISTINCT symbol FROM company;")
-//    Flux<String> findAllSymbols();
 }

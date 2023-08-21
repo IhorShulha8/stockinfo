@@ -1,5 +1,6 @@
 package com.ihorshulha.asyncapidatamanager.config;
 
+import com.ihorshulha.asyncapidatamanager.exception.RestTemplateResponseErrorHandler;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -52,22 +53,9 @@ public class ConfigurationService {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+        return restTemplate;
     }
-
-//    @Bean
-//    public ConnectionFactory connectionFactory() {
-////        return ConnectionFactories.get("r2dbc:postgresql://%s:%s@%s:%s/%s".formatted(username, password, host, port, name));
-//
-//        return ConnectionFactories.get(ConnectionFactoryOptions.builder()
-//                .option(DRIVER, "postgresql")
-//                .option(HOST, host)
-//                .option(PORT, 5432)  // optional, defaults to 5432
-//                .option(USER, username)
-//                .option(PASSWORD, password)
-//                .option(DATABASE, name)  // optional
-//                .build());
-//
-//    }
 }
 

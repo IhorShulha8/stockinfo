@@ -14,7 +14,7 @@ public interface IgnoreRuntimeException {
         try {
             exception.run();
         } catch (RuntimeException ex) {
-//            log.error(ex.getMessage());
+            log.error(ex.getMessage());
         }
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -48,8 +47,7 @@ public class DataProcessingService {
     public List<Stock> getStocksData() {
         List<CompletableFuture<Stock>> futures = queueClient.getCompanyQueue().stream()
                 .map(task -> CompletableFuture.supplyAsync(() -> {
-                    Optional<StockDto> oneCompanyStock = apiClient.getOneCompanyStock(task);
-                    StockDto stockDto = oneCompanyStock.orElse(null);
+                    StockDto stockDto = apiClient.getOneCompanyStock(task).orElse(null);
                     return stockMapper.stockDtoToStock(stockDto);
                 }))
                 .toList();
