@@ -23,11 +23,11 @@ import static com.ihorshulha.asyncapidatamanager.util.IgnoreRuntimeException.ign
 public class ExApiExchangeClient {
 
     @Value("${api.external.ref-data-url}")
-    protected String refDataUrl;
+    private String refDataUrl;
     @Value("${api.external.stock-data-url}")
-    protected String stockPriceUrl;
+    private String stockPriceUrl;
     @Value("${api.external.token}")
-    protected String token;
+    private String token;
 
     private final RestTemplate restTemplate;
     private ResponseEntity<StockDto[]> response;

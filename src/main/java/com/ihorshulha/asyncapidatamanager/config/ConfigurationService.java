@@ -19,15 +19,15 @@ import org.springframework.web.client.RestTemplate;
 public class ConfigurationService {
 
     @Value("${api.database.host}")
-    protected String host;
+    private String host;
     @Value("${api.database.port}")
-    protected int port;
+    private int port;
     @Value("${api.database.name}")
-    protected String name;
+    private String name;
     @Value("${api.database.username}")
-    protected String username;
+    private String username;
     @Value("${api.database.password}")
-    protected String password;
+    private String password;
 
     @Bean
     ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {

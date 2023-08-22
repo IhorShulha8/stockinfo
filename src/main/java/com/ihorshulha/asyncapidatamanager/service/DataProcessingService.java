@@ -34,7 +34,7 @@ public class DataProcessingService {
 
     @TrackExecutionTime
     public List<Company> getCompaniesData() {
-        queueClient.getCompanyQueue().clear();
+        queueClient.getTaskQueue().clear();
         log.debug("Queue was cleared");
         return apiClient.getCompanies().stream()
                 .filter(CompanyDTO::isEnabled)
@@ -49,7 +49,7 @@ public class DataProcessingService {
 
     @TrackExecutionTime
     public List<Stock> getStocksData() {
-        List<CompletableFuture<Stock>> futures = queueClient.getCompanyQueue().stream()
+        List<CompletableFuture<Stock>> futures = queueClient.getTaskQueue().stream()
                 .map(task -> CompletableFuture.supplyAsync(() -> {
                     StockDto stockDto = apiClient.getOneCompanyStock(task);
                     log.debug("StockDto was received {} by task {}",stockDto, task);

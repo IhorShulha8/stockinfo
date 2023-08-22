@@ -12,11 +12,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Component
 public class QueueClient {
 
-    protected BlockingQueue<String> companyQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<String> taskQueue = new LinkedBlockingQueue<>(200);
 
     public void putToQueue(String task) {
         try {
-            companyQueue.put(task);
+            taskQueue.put(task);
             log.debug("Queue client put task: {}", task);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
@@ -27,7 +27,7 @@ public class QueueClient {
     public String takeUrl() {
         String url;
         try {
-            url = companyQueue.take();
+            url = taskQueue.take();
             log.debug("Queue client took task: {}", url);
         } catch (InterruptedException e) {
             log.error(e.getMessage());

@@ -14,7 +14,6 @@ import org.springframework.test.context.event.annotation.BeforeTestExecution;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -30,7 +29,7 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
 
     @BeforeTestExecution
     public void setUp() {
-        queueClient.getCompanyQueue().clear();
+        queueClient.getTaskQueue().clear();
     }
 
     @Test
@@ -54,7 +53,7 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
         assertEquals(expectedSize, actual.size());
         verify(apiClient, times(1)).getCompanies();
         verify(apiClient, times(2)).getStocksUrl(anyString());
-        verify(queueClient, times(1)).getCompanyQueue();
+        verify(queueClient, times(1)).getTaskQueue();
         verify(queueClient, times(2)).putToQueue(url);
     }
 
@@ -64,13 +63,13 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
                 BigDecimal.valueOf(0.01), 100, 100, "Name");
         List<Stock> expected = List.of(
                 new Stock(1L, "symbol", BigDecimal.ONE, BigDecimal.valueOf(0.00), BigDecimal.valueOf(0.01), 100, 100, "Name", true));
-        queueClient.getCompanyQueue().add("test-task");
+        queueClient.getTaskQueue().add("test-task");
 
         when(apiClient.getOneCompanyStock(anyString())).thenReturn(stockDtoOptional);
         List<Stock> actual = dataProcessingService.getStocksData();
 
         assertEquals(expected, actual);
-        verify(queueClient, times(2)).getCompanyQueue();
+        verify(queueClient, times(2)).getTaskQueue();
         verify(apiClient, times(1)).getOneCompanyStock(anyString());
     }
 }
