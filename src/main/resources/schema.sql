@@ -1,4 +1,4 @@
--- Database: external_api_db
+-- Database: stocks-db
 
 --company
 create TABLE IF NOT EXISTS company (
