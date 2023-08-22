@@ -2,6 +2,7 @@ package com.ihorshulha.asyncapidatamanager.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpClientErrorException;
 
 @FunctionalInterface
 public interface IgnoreRuntimeException {
@@ -13,7 +14,7 @@ public interface IgnoreRuntimeException {
     static void ignoredException(IgnoreRuntimeException exception) {
         try {
             exception.run();
-        } catch (RuntimeException ex) {
+        } catch (HttpClientErrorException ex) {
             log.error(ex.getMessage());
         }
     }

@@ -2,6 +2,7 @@ package com.ihorshulha.asyncapidatamanager.client;
 
 import com.ihorshulha.asyncapidatamanager.dto.CompanyDTO;
 import com.ihorshulha.asyncapidatamanager.dto.StockDto;
+import com.ihorshulha.asyncapidatamanager.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.ihorshulha.asyncapidatamanager.util.IgnoreRuntimeException.ignoredException;
 
@@ -30,34 +30,35 @@ public class ExApiExchangeClient {
     protected String token;
 
     private final RestTemplate restTemplate;
+    private ResponseEntity<StockDto[]> response;
 
     public List<CompanyDTO> getCompanies() {
         ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {};
 
-        return Optional.of(restTemplate.exchange(String.format(refDataUrl, token), HttpMethod.GET, null, typeRef))
+        List<CompanyDTO> companyDTOS = Optional.of(restTemplate.exchange(String.format(refDataUrl, token), HttpMethod.GET, null, typeRef))
                 .filter(response -> (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())))
                 .map(HttpEntity::getBody)
                 .orElseThrow(RuntimeException::new);
+        log.debug("List companies was received, size of list {}", companyDTOS.size());
+        return companyDTOS;
     }
 
-    public Optional<StockDto> getOneCompanyStock(String url) {
-        AtomicReference<Optional<StockDto>> result = new AtomicReference<>(Optional.empty());
+    @TrackExecutionTime
+    public StockDto getOneCompanyStock(String url) {
+        return Optional.of(response = getExtResponse(url))
+                .filter(response -> (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())))
+                .map(response -> response.getBody()[0])
+                .orElseThrow(RuntimeException::new);
+    }
 
-        ignoredException(() -> {
-                    ResponseEntity<StockDto[]> response = restTemplate.exchange(url, HttpMethod.GET, null, StockDto[].class);
-
-                    if (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())) {
-                        result.set(Optional.ofNullable(response.getBody()[0]));
-                        log.debug("Response received status {} and number of stock {}", response.getStatusCode(), response.getBody().length);
-                    } else {
-                        log.debug("Response received status {}", response.getStatusCode());
-                    }
-                }
-        );
-        return result.get();
+    private ResponseEntity<StockDto[]> getExtResponse(String url) {
+        ignoredException(() -> response = restTemplate.getForEntity(url, StockDto[].class));
+        return response;
     }
 
     public String getStocksUrl(String symbol) {
-        return String.format(stockPriceUrl, symbol, token);
+        String url = String.format(stockPriceUrl, symbol, token);
+        log.debug("Url {} was generated.", url);
+        return url;
     }
 }

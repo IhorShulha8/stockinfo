@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Getter
@@ -16,19 +15,17 @@ public class QueueClient {
     protected BlockingQueue<String> companyQueue = new LinkedBlockingQueue<>();
 
     public void putToQueue(String task) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                companyQueue.put(task);
-                log.debug("Queue client put task: {}", task);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage());
-                throw new RuntimeException(e);
-            }
-        }).join();
+        try {
+            companyQueue.put(task);
+            log.debug("Queue client put task: {}", task);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     public String takeUrl() {
-        String url = "";
+        String url;
         try {
             url = companyQueue.take();
             log.debug("Queue client took task: {}", url);

@@ -8,6 +8,7 @@ import com.ihorshulha.asyncapidatamanager.mapper.CompanyMapper;
 import com.ihorshulha.asyncapidatamanager.mapper.StockMapper;
 import com.ihorshulha.asyncapidatamanager.client.ExApiExchangeClient;
 import com.ihorshulha.asyncapidatamanager.client.QueueClient;
+import com.ihorshulha.asyncapidatamanager.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +32,10 @@ public class DataProcessingService {
     private final StockMapper stockMapper;
 
 
+    @TrackExecutionTime
     public List<Company> getCompaniesData() {
         queueClient.getCompanyQueue().clear();
+        log.debug("Queue was cleared");
         return apiClient.getCompanies().stream()
                 .filter(CompanyDTO::isEnabled)
                 .limit(NUMBER_OF_COMPANIES)
@@ -44,10 +47,12 @@ public class DataProcessingService {
                 .toList();
     }
 
+    @TrackExecutionTime
     public List<Stock> getStocksData() {
         List<CompletableFuture<Stock>> futures = queueClient.getCompanyQueue().stream()
                 .map(task -> CompletableFuture.supplyAsync(() -> {
-                    StockDto stockDto = apiClient.getOneCompanyStock(task).orElse(null);
+                    StockDto stockDto = apiClient.getOneCompanyStock(task);
+                    log.debug("StockDto was received {} by task {}",stockDto, task);
                     return stockMapper.stockDtoToStock(stockDto);
                 }))
                 .toList();

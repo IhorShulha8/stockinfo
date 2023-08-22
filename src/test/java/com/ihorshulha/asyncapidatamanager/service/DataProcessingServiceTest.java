@@ -60,8 +60,8 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
 
     @Test
     void whenProcessingOfStocksDataSuccessful() {
-        Optional<StockDto> stockDtoOptional = Optional.of(new StockDto(1L, "symbol", BigDecimal.ONE,
-                BigDecimal.valueOf(0.01), 100, 100, "Name"));
+        StockDto stockDtoOptional = new StockDto(1L, "symbol", BigDecimal.ONE,
+                BigDecimal.valueOf(0.01), 100, 100, "Name");
         List<Stock> expected = List.of(
                 new Stock(1L, "symbol", BigDecimal.ONE, BigDecimal.valueOf(0.00), BigDecimal.valueOf(0.01), 100, 100, "Name", true));
         queueClient.getCompanyQueue().add("test-task");

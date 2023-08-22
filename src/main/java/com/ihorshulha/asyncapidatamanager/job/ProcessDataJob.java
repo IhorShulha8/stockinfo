@@ -2,6 +2,7 @@ package com.ihorshulha.asyncapidatamanager.job;
 
 import com.ihorshulha.asyncapidatamanager.repository.CustomRepositoryImpl;
 import com.ihorshulha.asyncapidatamanager.service.DataProcessingService;
+import com.ihorshulha.asyncapidatamanager.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +25,7 @@ public class ProcessDataJob {
                 .join();
     }
 
+    @TrackExecutionTime
     @Scheduled(fixedDelay = 5000, initialDelay = 1000)
     public void runProcessingStockDataJob() {
         CompletableFuture.supplyAsync(dataProcessingService::getStocksData)

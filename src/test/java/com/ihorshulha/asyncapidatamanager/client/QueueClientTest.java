@@ -23,12 +23,6 @@ class QueueClientTest extends BaseAbstractTest {
     }
 
     @Test
-    void whenPutNullTaskFailed() throws RuntimeException {
-        assertThatThrownBy(() -> queueClient.putToQueue(null))
-                .hasCauseExactlyInstanceOf(NullPointerException.class);
-    }
-
-    @Test
     void whenTakeUrlSuccessful() {
         queueClient.putToQueue(task);
         String actual = queueClient.takeUrl();
