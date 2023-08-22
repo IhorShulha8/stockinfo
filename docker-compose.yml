@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+
+  database:
+    image: postgres:latest
+#    restart: always
+    container_name: database
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=stocks-db
+
+  app:
+    build:
+      context: .
+    container_name: app
+#    restart: always
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
+    environment:
+      - SPRING_R2DBC_URL=r2dbc:postgresql://database:5432/stocks-db
+      - SPRING_R2DBC_USERNAME=postgres
+      - SPRING_R2DBC_PASSWORD=postgres
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_R2DBC=DEBUG
+
