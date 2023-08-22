@@ -11,7 +11,7 @@ spring:
   codec:
     max-in-memory-size: 10MB
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/ext_api_db
+    url: r2dbc:postgresql://localhost:5432/stocks-db
     username: postgres
     password: postgres
 
@@ -23,7 +23,7 @@ api:
   database:
     host: localhost
     port: 5432
-    name: ext_api_db
+    name: stocks-db
     username: postgres
     password: postgres
 
