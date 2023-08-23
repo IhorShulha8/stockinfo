@@ -32,3 +32,16 @@ build/
 ### VS Code ###
 .vscode/
 /commands.sql
+
+# .sourceignore
+
+# Flux ignore
+# https://fluxcd.io/docs/components/source/gitrepositories/#excluding-files
+
+# Exclude all
+/*
+
+# Include manifest directories
+!/resources/
+!/clusters/
+!/infrastructure/

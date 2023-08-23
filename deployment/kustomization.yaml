@@ -1,17 +1,4 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: async-api-data-manager
-nameSuffix: -kustomization
 resources:
-  - deployment.yaml
-  - svc-clusterip.yaml
-  - namespace.yaml
-  - configMap.yaml
-  - configMap2.yaml
-  - secret.yaml
-replicas:
-  - count: 1
-    name: async-api-data-manager-deployment
-images:
-  - name: IhorShulha8/async-api-data-manager
-    newTag: 77d9a1939051823cbd41a9a1033599d525517240
+  - spring-boot-app.yaml
