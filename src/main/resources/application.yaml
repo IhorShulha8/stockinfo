@@ -7,13 +7,31 @@
 aspect:
   enabled: true
 
+rds:
+  db:
+    url: stocks-db.cdhhic49lpmm.us-east-1.rds.amazonaws.com/postgres
+    username: postgres
+    password: postgres
+
+local:
+  db:
+    url: localhost:5432/stocks-db
+    username: postgres
+    password: postgres
+
 spring:
   codec:
     max-in-memory-size: 10MB
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/stocks-db
-    username: postgres
-    password: postgres
+    url: r2dbc:postgresql://${rds.db.url}
+    username: ${rds.db.username}
+    password: ${rds.db.password}
+  flyway:
+    url: jdbc:postgresql://${rds.db.url}
+    locations: classpath:db/migration
+    user: ${rds.db.username}
+    password: ${rds.db.password}
+    baseline-on-migrate: true
 
 api:
   external:
