@@ -14,6 +14,9 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+cache:
+  paths:
+    - '/root/.m2/**/*'
 artifacts:
   files:
     - target/*
