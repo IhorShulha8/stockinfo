@@ -9,12 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ihorshulha</groupId>
-	<artifactId>asyncapidatamanager</artifactId>
+	<artifactId>stockinfa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>async-api-data-manager-ms</name>
+	<name>stock-info</name>
 	<description>Async API Data Manager</description>
 	<properties>
 		<java.version>17</java.version>
+		<spring-boot.build-image.skip>true</spring-boot.build-image.skip>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -126,7 +127,18 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<image>
+						<name>ihorshulha8/stockinfa:${project.version}</name>
+					</image>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+							<goal>build-image</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
