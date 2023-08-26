@@ -15,9 +15,9 @@ phases:
       - echo Build started on `date`
       - mvn install
       - echo Building the Docker image...
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_NAME .
 #      docker tag hello-world:latest aws_account_id.dkr.ecr.region.amazonaws.com/hello-repository
-      - docker tag $IMAGE_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker tag $IMAGE_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_NAME
   post_build:
     commands:
       - echo Build completed on `date`
