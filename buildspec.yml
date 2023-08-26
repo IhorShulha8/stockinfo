@@ -22,9 +22,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
 #      docker tag hello-world:latest aws_account_id.dkr.ecr.region.amazonaws.com/hello-repository
-      - docker tag $IMAGE_NAME:$IMAGE_TAG aws_account_id.dkr.ecr.region.amazonaws.com/$IMAGE_REPO_NAME
+      - docker tag $IMAGE_NAME:latest aws_account_id.dkr.ecr.region.amazonaws.com/$IMAGE_REPO_NAME:latest
 #      docker push aws_account_id.dkr.ecr.region.amazonaws.com/hello-repository
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_NAME
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
 cache:
   paths:
     - '/root/.m2/**/*'
