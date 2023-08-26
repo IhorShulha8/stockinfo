@@ -7,6 +7,8 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
+#      aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
+#      https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html#cli-authenticate-registry
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
@@ -19,10 +21,13 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+#      docker tag hello-world:latest aws_account_id.dkr.ecr.region.amazonaws.com/hello-repository
+      - docker tag $IMAGE_NAME:$IMAGE_TAG aws_account_id.dkr.ecr.region.amazonaws.com/$IMAGE_REPO_NAME
+#      docker push aws_account_id.dkr.ecr.region.amazonaws.com/hello-repository
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_NAME
 cache:
   paths:
     - '/root/.m2/**/*'
-artifacts:
-  files:
-    - target/*
+#artifacts:
+#  files:
+#    - target/*
