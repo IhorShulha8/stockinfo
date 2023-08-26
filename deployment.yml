@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: stockinfo-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: stockinfo-deployment
@@ -14,6 +14,22 @@ spec:
     spec:
       containers:
         - name: stockinfo-deployment
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_password
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hostname-config
+                  key: postgres_host
           image: 421732516831.dkr.ecr.us-east-1.amazonaws.com/stockinfo:latest
           ports:
             - containerPort: 8080
