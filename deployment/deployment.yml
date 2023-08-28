@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockinfo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stockinfo-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stockinfo-app
+    spec:
+      containers:
+        - name: stockinfo-app
+          image: 421732516831.dkr.ecr.us-east-1.amazonaws.com/stockinfo:latest
+          ports:
+            - containerPort: 8080

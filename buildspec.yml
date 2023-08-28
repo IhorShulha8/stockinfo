@@ -25,6 +25,7 @@ phases:
 cache:
   paths:
     - '/root/.m2/**/*'
-#artifacts:
-#  files:
-#    - target/*
+artifacts:
+  files:
+    - build.json
+    - deployment/*
