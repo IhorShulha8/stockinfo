@@ -18,7 +18,7 @@ public class ProcessDataJob {
     private final DataProcessingService dataProcessingService;
     private final CustomRepository customRepository;
 
-    @Scheduled(fixedDelay = 3600 * 1000, initialDelay = 100)
+    @Scheduled(fixedDelay = 3600 * 1000, initialDelay = 1)
     public void onStartupProcessingCompanyDataJob() {
         CompletableFuture.supplyAsync(dataProcessingService::getCompaniesData)
                 .thenAccept(customRepository::saveCompanies)

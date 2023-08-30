@@ -1,15 +1,15 @@
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        r2dbc: DEBUG
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: DEBUG
 
 aspect:
   enabled: true
 
 rds:
   db:
-    url: stocks-db.cdhhic49lpmm.us-east-1.rds.amazonaws.com/postgres
+    url: stockinfo-db.cdhhic49lpmm.us-east-1.rds.amazonaws.com/stockdb
     username: postgres
     password: postgres
 
@@ -37,13 +37,13 @@ api:
   external:
     ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token=%s
     stock-data-url: https://api.iex.cloud/v1/data/core/quote/%s?token=%s
-    token: pk_0b2ae7889e7e4d9ca682e041765800e0
-  database:
-    host: localhost
-    port: 5432
-    name: stocks-db
-    username: postgres
-    password: postgres
+    token: pk_36fe63649f1c441abc528f05f6f2ea6d
+#  database:
+#    host: stocks-db.cdhhic49lpmm.us-east-1.rds.amazonaws.com
+#    port: 5432
+#    name: postgres
+#    username: postgres
+#    password: postgres
 
 service:
   number-of-companies: 200
