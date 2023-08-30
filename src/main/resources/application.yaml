@@ -9,7 +9,7 @@ aspect:
 
 rds:
   db:
-    url: testrds.cdhhic49lpmm.us-east-1.rds.amazonaws.com/postgres
+    url: testrds.cdhhic49lpmm.us-east-1.rds.amazonaws.com/stockdb
     username: postgres
     password: postgres
 
