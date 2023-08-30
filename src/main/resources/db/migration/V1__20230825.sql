@@ -1,9 +1,9 @@
-create TABLE IF NOT EXISTS company (
+CREATE TABLE IF NOT EXISTS company (
     id serial PRIMARY KEY,
     symbol VARCHAR(255)
     );
 
-create TABLE IF NOT EXISTS stock (
+CREATE TABLE IF NOT EXISTS stock (
     id serial PRIMARY KEY,
     symbol VARCHAR(255) not null,
     change NUMERIC(38,2),
