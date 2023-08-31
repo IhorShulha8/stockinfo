@@ -2,7 +2,6 @@ package com.ihorshulha.stockinfo.repository;
 
 import com.ihorshulha.stockinfo.entity.Company;
 import com.ihorshulha.stockinfo.entity.Stock;
-import com.ihorshulha.stockinfo.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -23,21 +22,18 @@ public class CustomRepositoryImpl implements CustomRepository {
     private final DatabaseClient databaseClient;
 
     @Override
-    @TrackExecutionTime
     public void saveCompanies(List<Company> companies) {
         companyRepository.saveAll(companies).subscribe();
 //        companies.forEach(company -> r2dbcEntityTemplate.insert(company).subscribe());
-//        companies.forEach(company -> save(company).subscribe());
         log.debug("{} companies were saved", companies.size());
     }
 
-    @TrackExecutionTime
     @Override
     public void saveStocks(List<Stock> stocks) {
         stocks.stream()
                 .filter(Objects::nonNull)
                 .forEach(stock -> r2dbcEntityTemplate.insert(stock)
-                        .doOnError(throwable -> log.error("Requesting stock: {} caused an error: {}",stock, throwable.getMessage()))
+                        .doOnError(throwable -> log.error("Requesting stock: {} caused an error: {}", stock, throwable.getMessage()))
                         .subscribe());
         log.debug("{} stocks were saved", stocks.size());
     }

@@ -2,7 +2,6 @@ package com.ihorshulha.stockinfo.client;
 
 import com.ihorshulha.stockinfo.dto.CompanyDTO;
 import com.ihorshulha.stockinfo.dto.StockDto;
-import com.ihorshulha.stockinfo.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +42,6 @@ public class ExApiExchangeClient {
         return companyDTOS;
     }
 
-    @TrackExecutionTime
     public StockDto getOneCompanyStock(String url) {
         return Optional.of(response = getExtResponse(url))
                 .filter(response -> (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())))

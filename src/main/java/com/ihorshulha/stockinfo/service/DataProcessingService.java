@@ -8,7 +8,6 @@ import com.ihorshulha.stockinfo.mapper.CompanyMapper;
 import com.ihorshulha.stockinfo.mapper.StockMapper;
 import com.ihorshulha.stockinfo.client.ExApiExchangeClient;
 import com.ihorshulha.stockinfo.client.QueueClient;
-import com.ihorshulha.stockinfo.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +31,6 @@ public class DataProcessingService {
     private final StockMapper stockMapper;
 
 
-    @TrackExecutionTime
     public List<Company> getCompaniesData() {
         queueClient.getTaskQueue().clear();
         log.debug("Queue was cleared");
@@ -47,7 +45,6 @@ public class DataProcessingService {
                 .toList();
     }
 
-    @TrackExecutionTime
     public List<Stock> getStocksData() {
         List<CompletableFuture<Stock>> futures = queueClient.getTaskQueue().stream()
                 .map(task -> CompletableFuture.supplyAsync(() -> {
