@@ -1,0 +1,40 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: stockinfo-app
+  region: us-east-1
+  version: "1.27"
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+    - metadata:
+        name: atockinfo-policy
+      attachPolicyARNs:
+      - "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+      - "arn:aws:iam::421732516831:policy/rds-connect"
+      - "arn:aws:iam::aws:policy/AdministratorAccess"
+
+vpc:
+  subnets:
+    private:
+      us-east-1f: { id: subnet-0bf22a8f71d31b5d6 }
+      us-east-1c: { id: subnet-0d637573e65b852ad }
+      us-east-1d: { id: subnet-0675f36dd81b81857 }
+    public:
+      us-east-1a: { id: subnet-0d7cbc240162e7bf6 }
+      us-east-1b: { id: subnet-070c05a0840fe00c1 }
+
+managedNodeGroups:
+  - name: stockinfo-ng
+    minSize: 1
+    maxSize: 2
+    desiredCapacity: 1
+    instanceType: t2.small
+    ssh:
+      enableSsm: true
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: [ "*" ]
