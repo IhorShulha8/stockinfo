@@ -38,7 +38,7 @@ public class CustomRepositoryImpl implements CustomRepository {
         log.debug("{} stocks were saved", stocks.size());
     }
 
-    public Mono<Long> save(Company company) {
+    private Mono<Long> save(Company company) {
         return this.databaseClient.sql("INSERT INTO  company (symbol) VALUES (:symbol)")
                 .filter((statement, executeFunction) -> statement.returnGeneratedValues("id").execute())
                 .bind("symbol", company.getSymbol())
