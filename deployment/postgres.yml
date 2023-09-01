@@ -1,8 +1,0 @@
-# postgres.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres-service
-spec:
-  type: ExternalName
-  externalName: testrds.cdhhic49lpmm.us-east-1.rds.amazonaws.com
