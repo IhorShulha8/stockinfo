@@ -42,12 +42,6 @@ api:
     ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token=%s
     stock-data-url: https://api.iex.cloud/v1/data/core/quote/%s?token=%s
     token: pk_36fe63649f1c441abc528f05f6f2ea6d
-#  database:
-#    host: testrds.cdhhic49lpmm.us-east-1.rds.amazonaws.com
-#    port: 5432
-#    name: stockdb
-#    username: postgres
-#    password: postgres
 
 service:
   number-of-companies: 200
