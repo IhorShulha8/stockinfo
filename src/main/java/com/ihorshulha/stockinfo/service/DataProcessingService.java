@@ -32,14 +32,11 @@ public class DataProcessingService {
 
 
     public List<Company> getCompaniesData() {
-        queueClient.getTaskQueue().clear();
-        log.debug("Queue was cleared");
         return apiClient.getCompanies().stream()
                 .filter(CompanyDTO::isEnabled)
                 .limit(NUMBER_OF_COMPANIES)
                 .map(companyDTO -> {
-                    String url = apiClient.getStocksUrl(companyDTO.symbol());
-                    queueClient.putToQueue(url);
+                    putUrlToQueue(companyDTO);
                     return companyMapper.companyDtoToCompany(companyDTO);
                 })
                 .toList();
@@ -49,7 +46,7 @@ public class DataProcessingService {
         List<CompletableFuture<Stock>> futures = queueClient.getTaskQueue().stream()
                 .map(task -> CompletableFuture.supplyAsync(() -> {
                     StockDto stockDto = apiClient.getOneCompanyStock(task);
-                    log.debug("StockDto was received {} by task {}",stockDto, task);
+                    log.debug("StockDto was received {} by task {}", stockDto, task);
                     return stockMapper.stockDtoToStock(stockDto);
                 }))
                 .toList();
@@ -59,5 +56,15 @@ public class DataProcessingService {
                         .map(CompletableFuture::join)
                         .toList())
                 .join();
+    }
+
+    private void putUrlToQueue(CompanyDTO companyDTO) {
+        String url = apiClient.getStocksUrl(companyDTO.symbol());
+        queueClient.putToQueue(url);
+    }
+
+    public void clearQueue() {
+        queueClient.getTaskQueue().clear();
+        log.debug("Queue was cleared");
     }
 }
