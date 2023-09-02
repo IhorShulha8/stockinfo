@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.ihorshulha.stockinfo.util.IgnoreRuntimeException.ignoredException;
@@ -29,17 +30,16 @@ public class ExApiExchangeClient {
     private String token;
 
     private final RestTemplate restTemplate;
+    private final RestClient restClient;
     private ResponseEntity<StockDto[]> response;
 
     public List<CompanyDTO> getCompanies() {
-        ParameterizedTypeReference<List<CompanyDTO>> typeRef = new ParameterizedTypeReference<>() {};
-
-        List<CompanyDTO> companyDTOS = Optional.of(restTemplate.exchange(String.format(refDataUrl, token), HttpMethod.GET, null, typeRef))
-                .filter(response -> (response.getStatusCode().is2xxSuccessful() && Objects.nonNull(response.getBody())))
-                .map(HttpEntity::getBody)
-                .orElseThrow(RuntimeException::new);
-        log.debug("List companies was received, size of list {}", companyDTOS.size());
-        return companyDTOS;
+        return restClient.get()
+                .uri(String.format(refDataUrl, token))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<CompanyDTO>>() {
+                });
     }
 
     public StockDto getOneCompanyStock(String url) {
