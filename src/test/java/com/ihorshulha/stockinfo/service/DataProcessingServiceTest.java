@@ -6,6 +6,7 @@ import com.ihorshulha.stockinfo.dto.StockDto;
 import com.ihorshulha.stockinfo.entity.Company;
 import com.ihorshulha.stockinfo.entity.Stock;
 import com.ihorshulha.stockinfo.client.ExApiExchangeClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,7 +28,7 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
     @MockBean
     public ExApiExchangeClient apiClient;
 
-    @BeforeTestExecution
+    @BeforeEach
     public void setUp() {
         queueClient.getTaskQueue().clear();
     }
@@ -69,7 +70,7 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
         List<Stock> actual = dataProcessingService.getStocksData();
 
         assertEquals(expected, actual);
-        verify(queueClient, times(2)).getTaskQueue();
+        verify(queueClient, times(3)).getTaskQueue();
         verify(apiClient, times(1)).getOneCompanyStock(anyString());
     }
 }

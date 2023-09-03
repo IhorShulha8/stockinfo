@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Component
 public class QueueClient {
 
-    private final BlockingQueue<String> taskQueue = new LinkedBlockingQueue<>(200);
+    private final BlockingQueue<String> taskQueue = new LinkedBlockingQueue<>();
 
     public void putToQueue(String task) {
         try {
