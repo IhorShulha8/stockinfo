@@ -30,7 +30,7 @@ public class CustomRepositoryImpl implements CustomRepository {
 
     @Override
     public void saveStocks(List<Stock> stocks) {
-        stocks.stream()
+        stocks.parallelStream()
                 .filter(Objects::nonNull)
                 .forEach(stock -> r2dbcEntityTemplate.insert(stock)
                         .doOnError(throwable -> log.error("Requesting stock: {} caused an error: {}", stock, throwable.getMessage()))

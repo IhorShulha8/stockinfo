@@ -42,13 +42,9 @@ public class DataProcessingService {
                 .toList();
     }
 
-    public List<Stock> getStocksData() {
-        List<CompletableFuture<Stock>> futures = queueClient.getTaskQueue().stream()
-                .map(task -> CompletableFuture.supplyAsync(() -> {
-                    StockDto stockDto = apiClient.getOneCompanyStock(task);
-                    log.debug("StockDto was received {} by task {}", stockDto, task);
-                    return stockMapper.stockDtoToStock(stockDto);
-                }))
+    public List<StockDto> getStocksData() {
+        List<CompletableFuture<StockDto>> futures = queueClient.getTaskQueue().stream()
+                .map(task -> CompletableFuture.supplyAsync(() -> apiClient.getOneCompanyStock(task)))
                 .toList();
 
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]))
@@ -66,5 +62,17 @@ public class DataProcessingService {
     public void clearQueue() {
         queueClient.getTaskQueue().clear();
         log.debug("Queue was cleared");
+    }
+
+    public List<Stock> mapToEntity(List<StockDto> stockDtos) {
+        List<CompletableFuture<Stock>> futures = stockDtos.stream()
+                .map(stockDto -> CompletableFuture.supplyAsync(() -> stockMapper.stockDtoToStock(stockDto)))
+                .toList();
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]))
+                .thenApply(v -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .toList())
+                .join();
     }
 }

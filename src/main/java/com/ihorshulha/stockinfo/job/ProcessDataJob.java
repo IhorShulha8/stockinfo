@@ -1,5 +1,6 @@
 package com.ihorshulha.stockinfo.job;
 
+import com.ihorshulha.stockinfo.mapper.StockMapper;
 import com.ihorshulha.stockinfo.repository.CustomRepository;
 import com.ihorshulha.stockinfo.service.DataProcessingService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
@@ -16,20 +19,24 @@ public class ProcessDataJob {
 
     private final DataProcessingService dataProcessingService;
     private final CustomRepository customRepository;
+    private final StockMapper stockMapper;
 
     @Scheduled(fixedDelay = 3600 * 1000, initialDelay = 100)
     public void onStartupProcessingCompanyDataJob() {
+        ExecutorService executor = Executors.newCachedThreadPool();
         CompletableFuture.supplyAsync(() -> {
                     dataProcessingService.clearQueue();
                     return dataProcessingService.getCompaniesData();
-                })
+                }, executor)
                 .thenAccept(customRepository::saveCompanies)
                 .join();
     }
 
     @Scheduled(fixedDelay = 5000, initialDelay = 1000)
     public void runProcessingStockDataJob() {
-        CompletableFuture.supplyAsync(dataProcessingService::getStocksData)
+        ExecutorService executor = Executors.newCachedThreadPool();
+        CompletableFuture.supplyAsync(dataProcessingService::getStocksData, executor)
+                .thenApply(dataProcessingService::mapToEntity)
                 .thenAccept(customRepository::saveStocks)
                 .join();
     }

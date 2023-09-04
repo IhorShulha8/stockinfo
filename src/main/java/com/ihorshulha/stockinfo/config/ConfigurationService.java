@@ -22,12 +22,5 @@ public class ConfigurationService {
                         (request, response) -> log.error("RestClient status error: " + response.getStatusText()))
                 .build();
     }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
-        return restTemplate;
-    }
 }
 

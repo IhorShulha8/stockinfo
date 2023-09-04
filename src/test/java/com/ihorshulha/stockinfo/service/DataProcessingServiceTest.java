@@ -62,12 +62,12 @@ public class DataProcessingServiceTest extends BaseAbstractTest {
     void whenProcessingOfStocksDataSuccessful() {
         StockDto stockDtoOptional = new StockDto(1L, "symbol", BigDecimal.ONE,
                 BigDecimal.valueOf(0.01), 100, 100, "Name");
-        List<Stock> expected = List.of(
-                new Stock(1L, "symbol", BigDecimal.ONE, BigDecimal.valueOf(0.00), BigDecimal.valueOf(0.01), 100, 100, "Name", true));
+        List<StockDto> expected = List.of(
+                new StockDto(1L, "symbol", BigDecimal.ONE, BigDecimal.valueOf(0.01), 100, 100, "Name"));
         queueClient.getTaskQueue().add("test-task");
 
         when(apiClient.getOneCompanyStock(anyString())).thenReturn(stockDtoOptional);
-        List<Stock> actual = dataProcessingService.getStocksData();
+        List<StockDto> actual = dataProcessingService.getStocksData();
 
         assertEquals(expected, actual);
         verify(queueClient, times(3)).getTaskQueue();
