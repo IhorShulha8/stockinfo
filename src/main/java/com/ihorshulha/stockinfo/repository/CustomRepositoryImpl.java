@@ -22,10 +22,9 @@ public class CustomRepositoryImpl implements CustomRepository {
     private final DatabaseClient databaseClient;
 
     @Override
-    public void saveCompanies(List<Company> companies) {
-        companyRepository.saveAll(companies).subscribe();
-//        companies.forEach(company -> r2dbcEntityTemplate.insert(company).subscribe());
-        log.debug("{} companies were saved", companies.size());
+    public Mono<Company> save(Company company) {
+        return r2dbcEntityTemplate.insert(company)
+                .doOnSuccess(c -> log.debug("Company with symbol {} was inserted", c.getSymbol()));
     }
 
     @Override

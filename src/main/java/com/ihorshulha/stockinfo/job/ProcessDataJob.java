@@ -22,13 +22,9 @@ public class ProcessDataJob {
     private final StockMapper stockMapper;
 
     @Scheduled(fixedDelay = 3600 * 1000, initialDelay = 100)
-    public void onStartupProcessingCompanyDataJob() {
-        ExecutorService executor = Executors.newCachedThreadPool();
-        CompletableFuture.supplyAsync(() -> {
-                    dataProcessingService.clearQueue();
-                    return dataProcessingService.getCompaniesData();
-                }, executor)
-                .thenAccept(customRepository::saveCompanies)
+    public void runProcessingCompanyDataJob() {
+        CompletableFuture.runAsync(() -> dataProcessingService.processingCompanyData().subscribe())
+                .thenAccept(unused -> log.info("Processing data companies was finished"))
                 .join();
     }
 

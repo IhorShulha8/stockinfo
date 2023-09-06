@@ -6,15 +6,17 @@ import com.ihorshulha.stockinfo.entity.Company;
 import com.ihorshulha.stockinfo.entity.Stock;
 import com.ihorshulha.stockinfo.mapper.CompanyMapper;
 import com.ihorshulha.stockinfo.mapper.StockMapper;
-import com.ihorshulha.stockinfo.client.ExApiExchangeClient;
-import com.ihorshulha.stockinfo.client.QueueClient;
+import com.ihorshulha.stockinfo.client.ExApiExchangeClientImpl;
+import com.ihorshulha.stockinfo.repository.CustomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Slf4j
@@ -24,22 +26,24 @@ public class DataProcessingService {
 
     @Value("${service.number-of-companies}")
     private Integer NUMBER_OF_COMPANIES;
+    private final List<String> tasks = new CopyOnWriteArrayList<>();
 
-    private final ExApiExchangeClient apiClient;
-    private final QueueClient queueClient;
+    private final ExApiExchangeClientImpl apiClient;
     private final CompanyMapper companyMapper;
     private final StockMapper stockMapper;
+    private final CustomRepository customRepository;
 
 
-    public List<Company> getCompaniesData() {
-        return apiClient.getCompanies().stream()
+    public Mono<Void> processingCompanyData() {
+        tasks.clear();
+        return apiClient.callToApi()
                 .filter(CompanyDTO::isEnabled)
-                .limit(NUMBER_OF_COMPANIES)
-                .map(companyDTO -> {
-                    putUrlToQueue(companyDTO);
-                    return companyMapper.companyDtoToCompany(companyDTO);
-                })
-                .toList();
+                .take(NUMBER_OF_COMPANIES)
+                .map(companyMapper::map)
+                .map(this::addTask)
+                .map(customRepository::save)
+                .map(Mono::subscribe)
+                .then();
     }
 
     public List<StockDto> getStocksData() {
@@ -74,5 +78,17 @@ public class DataProcessingService {
                         .map(CompletableFuture::join)
                         .toList())
                 .join();
+    }
+
+    public Company addTask(Company company) {
+        String uri = apiClient.getUri(company.getSymbol());
+        tasks.add(uri);
+        return company;
+    }
+
+    public String getTask() {
+        String task = tasks.get(0);
+        tasks.remove(task);
+        return task;
     }
 }

@@ -14,20 +14,18 @@ import java.io.Serializable;
 import java.io.Serial;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "company")
+@Table("company")
 public class Company implements Persistable<Integer>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column("id")
     private Integer id;
 
-    @Column("symbol")
     private String symbol;
 
     @Transient

@@ -1,9 +1,7 @@
 package com.ihorshulha.stockinfo.repository;
 
 import com.ihorshulha.stockinfo.entity.Company;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
-@Repository
-public interface CompanyRepository extends ReactiveCrudRepository<Company, Integer> {
+public interface CompanyRepository extends R2dbcRepository<Company, Integer> {
 }
