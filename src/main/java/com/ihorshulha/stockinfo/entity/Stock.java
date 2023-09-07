@@ -35,9 +35,6 @@ public class Stock implements Persistable<Long>, Serializable {
     @Column("latest_price")
     private BigDecimal latestPrice;
 
-    @Column("delta_price")
-    private BigDecimal deltaPrice;
-
     @Column("change")
     private BigDecimal change;
 

@@ -21,7 +21,8 @@ public class ProcessDataJob {
 
     @Scheduled(fixedDelay = 3600 * 1000, initialDelay = 100)
     public void runProcessingCompanyDataJob() {
-        CompletableFuture.runAsync(() -> dataProcessingService.processingCompanyData().subscribe(), executor)
+        CompletableFuture.supplyAsync(dataProcessingService::processingCompanyData, executor)
+                .thenApply(Mono::subscribe)
                 .thenAccept(unused -> log.info("Processing data of companies was finished"))
                 .join();
     }
