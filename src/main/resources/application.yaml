@@ -2,7 +2,7 @@
 #  level:
 #    org:
 #      springframework:
-#        r2dbc: DEBUG
+#        r2dbc: TRACE
 
 aspect:
   enabled: true
@@ -39,9 +39,9 @@ spring:
 
 api:
   external:
-    ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token=%s
-    stock-data-url: https://api.iex.cloud/v1/data/core/quote/%s?token=%s
-    token: pk_36fe63649f1c441abc528f05f6f2ea6d
+    ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token={token}
+    stock-data-url: https://api.iex.cloud/v1/data/core/quote/{symbol}?token={token}
+    token: pk_44dd36d9cde44cd3a7eba76f75b73def
 
 service:
-  number-of-companies: 200
+  number-of-companies: 201
