@@ -12,7 +12,7 @@ import static org.mockito.Mockito.*;
 
 public class AnalyticServiceTest extends BaseAbstractTest {
     @SpyBean
-    private AnalyticService analyticService;
+    private AnalyticServiceImpl analyticService;
     @MockBean
     private StockRepository stockRepository;
 
