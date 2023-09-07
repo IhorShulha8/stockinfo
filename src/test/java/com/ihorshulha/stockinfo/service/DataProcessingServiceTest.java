@@ -5,72 +5,59 @@ import com.ihorshulha.stockinfo.dto.CompanyDTO;
 import com.ihorshulha.stockinfo.dto.StockDto;
 import com.ihorshulha.stockinfo.entity.Company;
 import com.ihorshulha.stockinfo.entity.Stock;
-import com.ihorshulha.stockinfo.client.ExApiExchangeClient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.powermock.api.support.membermodification.MemberModifier;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class DataProcessingServiceTest extends BaseAbstractTest {
-    @Value("${service.number-of-companies}")
-    private Integer NUMBER_OF_COMPANIES;
+
     @SpyBean
-    private DataProcessingService dataProcessingService;
-    @MockBean
-    public ExApiExchangeClient apiClient;
+    private DataProcessingService service;
+    private List<String> testTasks;
 
-    @BeforeEach
-    public void setUp() {
-        queueClient.getTaskQueue().clear();
+    @Test
+    void whenProcessingOfCompanyDataSuccessful() throws IllegalAccessException {
+        testTasks = new ArrayList<>();
+        MemberModifier.field(DataProcessingServiceImpl.class, "tasks").set(service, testTasks);
+        CompanyDTO dto = new CompanyDTO(1, "symbol", true);
+        Company company = new Company(1, "symbol", true);
+        Flux<CompanyDTO> flux = Flux.just(dto);
+        Mono<Company> mono = Mono.just(company);
+        when(apiClient.callToCompanyApi()).thenReturn(flux);
+        when(customRepository.save(any())).thenReturn(mono);
+
+        var result = service.processingCompanyData();
+
+        result.as(StepVerifier::create).verifyComplete();
+        verify(apiClient, times(1)).callToCompanyApi();
+        verify(customRepository, times(1)).save(any());
     }
 
     @Test
-    void whenProcessingOfCompanyDataSuccessful() {
-        String url = "url";
-        CompanyDTO companyDTO1 = new CompanyDTO(1, "symbol1", true);
-        CompanyDTO companyDTO2 = new CompanyDTO(2, "symbol2", false);
-        CompanyDTO companyDTO3 = new CompanyDTO(3, "symbol3", true);
-        Company company1 = new Company(1, "symbol1", true);
-        Company company3 = new Company(3, "symbol3", true);
-        List<CompanyDTO> companyDTOS = List.of(companyDTO1, companyDTO2, companyDTO3);
-        List<Company> expected = List.of(company1, company3);
-        int expectedSize = expected.size();
-        companyDTOS.forEach(dto -> queueClient.putToQueue(dto.symbol()));
+    void whenProcessingOfStocksDataSuccessful() throws IllegalAccessException {
+        testTasks = List.of("url1", "url2");
+        MemberModifier.field(DataProcessingServiceImpl.class, "tasks").set(service, testTasks);
+        Stock stock = new Stock(1L, "symbol", BigDecimal.TEN, BigDecimal.ONE, 5, null, "Name", true);
+        StockDto dto = new StockDto(1L, "symbol", BigDecimal.TEN, BigDecimal.ONE, 5, null, "Name");
+        Mono<Stock> mono = Mono.just(stock);
+        Mono<StockDto> monoDto = Mono.just(dto);
+        when(apiClient.callToStockApi(anyString())).thenReturn(monoDto);
+        when(customRepository.saveStock(any())).thenReturn(mono);
 
-        when(apiClient.getCompanies()).thenReturn(companyDTOS);
-        when(apiClient.getStocksUrl(anyString())).thenReturn(url);
-        List<Company> actual = dataProcessingService.getCompaniesData();
+        var result = service.processingStockData();
 
-        assertEquals(expected, actual);
-        assertEquals(expectedSize, actual.size());
-        verify(apiClient, times(1)).getCompanies();
-        verify(apiClient, times(2)).getStocksUrl(anyString());
-        verify(queueClient, times(1)).getTaskQueue();
-        verify(queueClient, times(2)).putToQueue(url);
-    }
-
-    @Test
-    void whenProcessingOfStocksDataSuccessful() {
-        StockDto stockDtoOptional = new StockDto(1L, "symbol", BigDecimal.ONE,
-                BigDecimal.valueOf(0.01), 100, 100, "Name");
-        List<StockDto> expected = List.of(
-                new StockDto(1L, "symbol", BigDecimal.ONE, BigDecimal.valueOf(0.01), 100, 100, "Name"));
-        queueClient.getTaskQueue().add("test-task");
-
-        when(apiClient.getOneCompanyStock(anyString())).thenReturn(stockDtoOptional);
-        List<StockDto> actual = dataProcessingService.getStocksData();
-
-        assertEquals(expected, actual);
-        verify(queueClient, times(3)).getTaskQueue();
-        verify(apiClient, times(1)).getOneCompanyStock(anyString());
+        result.as(StepVerifier::create).verifyComplete();
+        verify(apiClient, times(2)).callToStockApi(anyString());
+        verify(customRepository, times(2)).saveStock(any(Stock.class));
     }
 }
