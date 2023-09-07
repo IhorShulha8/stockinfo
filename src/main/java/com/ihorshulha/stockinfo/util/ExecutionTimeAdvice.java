@@ -20,9 +20,9 @@ public class ExecutionTimeAdvice {
         long startTime = System.nanoTime();
         Object object = point.proceed();
         long endTime = System.nanoTime();
-        log.info(MessageFormat.format("Method Name: {0}. Thread {1}. Time taken for execution is : {2}seconds",
+        log.info(MessageFormat.format("Method name: {0}. Thread {1}. Time taken for execution is : {2}nanoseconds",
                 point.getSignature().getName(), Thread.currentThread().getId(),
-                (double) (endTime - startTime) / 1_000_000_000.0));
+                endTime - startTime));
         return object;
     }
 }
