@@ -8,9 +8,9 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {
 
-    CompanyDTO map(Company company);
+    CompanyDTO mapToCompany(Company company);
 
     @InheritInverseConfiguration
-    Company map(CompanyDTO company);
+    Company mapToCompanyDto(CompanyDTO companyDTO);
 
 }
