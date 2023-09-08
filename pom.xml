@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ihorshulha</groupId>
-	<artifactId>stockinfa</artifactId>
+	<artifactId>stockinfo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>stock-info</name>
 	<description>Async API Data Manager</description>
@@ -146,7 +146,7 @@
 						</exclude>
 					</excludes>
 					<image>
-						<name>ihorshulha8/stockinfa:${project.version}</name>
+						<name>ihorshulha8/stockinfo:${project.version}</name>
 					</image>
 				</configuration>
 				<executions>

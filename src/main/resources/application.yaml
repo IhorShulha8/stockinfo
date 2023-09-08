@@ -28,8 +28,8 @@ spring:
     password: ${rds.db.password}
     pool:
       enabled: true
-      initial-size: 50
-      max-size: 100
+      initial-size: 10
+      max-size: 20
   flyway:
     url: jdbc:postgresql://${rds.db.url}
     locations: classpath:db/migration
