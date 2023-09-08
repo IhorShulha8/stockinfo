@@ -15,5 +15,6 @@ spec:
       containers:
         - name: stockinfo-app-container
           image: 421732516831.dkr.ecr.us-east-1.amazonaws.com/stockinfo:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
