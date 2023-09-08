@@ -27,5 +27,4 @@ cache:
     - '/root/.m2/**/*'
 artifacts:
   files:
-    - build.json
     - deployment/*

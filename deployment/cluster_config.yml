@@ -29,7 +29,7 @@ vpc:
 managedNodeGroups:
   - name: stockinfo-ng
     minSize: 1
-    maxSize: 2
+    maxSize: 1
     desiredCapacity: 1
     instanceType: t2.small
     ssh:
