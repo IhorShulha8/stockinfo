@@ -8,7 +8,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - kubectl scale --replicas=0 deployment/stockinfo-deployment
+#      - kubectl scale --replicas=0 deployment/stockinfo-deployment
   build:
     commands:
       - echo Build started on `date`
@@ -22,7 +22,7 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Restarting eks pods
-      - kubectl scale --replicas=1 deployment/stockinfo-deployment
+#      - kubectl scale --replicas=1 deployment/stockinfo-deployment
 #      - kubectl rollout restart deployment stockinfo-deployment
 cache:
   paths:
