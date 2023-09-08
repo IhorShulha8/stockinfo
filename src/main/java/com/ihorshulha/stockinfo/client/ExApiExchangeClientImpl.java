@@ -30,7 +30,7 @@ public class ExApiExchangeClientImpl implements ExApiExchangeClient {
 
     public Flux<CompanyDTO> callToCompanyApi() {
         return webClient.get()
-                .uri(getUri())
+                .uri(getCompanyUri())
                 .retrieve()
                 .bodyToFlux(CompanyDTO.class);
     }
@@ -44,13 +44,13 @@ public class ExApiExchangeClientImpl implements ExApiExchangeClient {
                 .map(obj -> obj[0]);
     }
 
-    public URI getUri() {
+    public URI getCompanyUri() {
         return UriComponentsBuilder
                 .fromUriString(refDataUrl)
                 .build(token, "token");
     }
 
-    public String getUri(String symbol) {
+    public String getStockUri(String symbol) {
         return UriComponentsBuilder
                 .fromUriString(stockPriceUrl)
                 .build(symbol, token)

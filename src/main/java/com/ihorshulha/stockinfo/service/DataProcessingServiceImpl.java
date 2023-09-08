@@ -57,7 +57,7 @@ public class DataProcessingServiceImpl implements DataProcessingService {
     }
 
     private Company addTask(Company company) {
-        String uri = apiClient.getUri(company.getSymbol());
+        String uri = apiClient.getStockUri(company.getSymbol());
         tasks.add(uri);
         return company;
     }

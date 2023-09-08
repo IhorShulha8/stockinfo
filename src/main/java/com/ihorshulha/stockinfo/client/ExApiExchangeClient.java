@@ -12,7 +12,7 @@ public interface ExApiExchangeClient {
 
     Mono<StockDto> callToStockApi(String uri);
 
-    URI getUri();
+    URI getCompanyUri();
 
-    String getUri(String symbol);
+    String getStockUri(String symbol);
 }
