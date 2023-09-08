@@ -36,7 +36,7 @@ public class DataProcessingServiceImpl implements DataProcessingService {
     public Mono<Void> processingCompanyData() {
         tasks.clear();
         return apiClient.callToCompanyApi()
-                .onErrorContinue((error, obj) -> log.error("error:[{}], obj:[{}]", error.getMessage(), obj))
+                .onErrorContinue((error, obj) -> log.error("error:[{}]", error.getMessage()))
                 .filter(CompanyDTO::isEnabled)
                 .take(NUMBER_OF_COMPANIES)
                 .map(companyMapper::mapToCompanyDto)
@@ -49,7 +49,7 @@ public class DataProcessingServiceImpl implements DataProcessingService {
     public Mono<Void> processingStockData() {
         return Flux.fromIterable(tasks)
                 .flatMap(s -> apiClient.callToStockApi(getTask()))
-                .onErrorContinue((error, obj) -> log.error("error:[{}], obj:[{}]", error.getMessage(), obj))
+                .onErrorContinue((error, obj) -> log.error("error:[{}]", error.getMessage()))
                 .map(stockMapper::mapToStockDto)
                 .map(customRepository::saveStock)
                 .map(Mono::subscribe)
