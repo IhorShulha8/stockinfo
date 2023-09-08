@@ -6,7 +6,6 @@ import com.ihorshulha.stockinfo.mapper.CompanyMapper;
 import com.ihorshulha.stockinfo.mapper.StockMapper;
 import com.ihorshulha.stockinfo.client.ExApiExchangeClientImpl;
 import com.ihorshulha.stockinfo.repository.CustomRepository;
-import com.ihorshulha.stockinfo.util.TrackExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +46,6 @@ public class DataProcessingServiceImpl implements DataProcessingService {
                 .then();
     }
 
-    @TrackExecutionTime
     public Mono<Void> processingStockData() {
         return Flux.fromIterable(tasks)
                 .flatMap(s -> apiClient.callToStockApi(getTask()))
