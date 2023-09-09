@@ -8,8 +8,9 @@ phases:
       - curl -sS -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/linux/amd64/kubectl
       - chmod +x ./kubectl #./aws-iam-authenticator
       - export PATH=$PWD/:$PATH
-      - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
+#      - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
       - kubectl version --short --client
+      - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME
       - echo kubectl was installed
     # steps:
   pre_build:
@@ -20,7 +21,7 @@ phases:
       - echo check config
 #      - kubectl config view --minify
       - echo check kubectl access
-      - kubectl get svc
+#      - kubectl get svc
 
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
