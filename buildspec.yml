@@ -16,7 +16,9 @@ phases:
   pre_build:
     commands:
       - echo Logging into Amazon EKS...
-      - $(aws ecr get-login --no-include-email)
+#      - $(aws ecr get-login --no-include-email)
+      - export AWC_ACCESS_KEY=$ACCESS_KEY_ID
+      - export AWS_SECRET_KEY=$SECRET_ACCESS_KEY
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
 #      - export KUBECONFIG=$HOME/.kube/config
       - echo check config
