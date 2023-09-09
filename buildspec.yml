@@ -5,11 +5,11 @@ phases:
   install:
     commands:
       - mkdir -p ~/.aws/
-      - echo "[profile anotheracc]" >> ~/.aws/config
+#      - echo "[profile anotheracc]" >> ~/.aws/config
       - echo "role_arn = arn:aws:iam::$AWS_ACCOUNT_ID:role/codebuild-stockinfocodebuild-new--service-role" >> ~/.aws/config
-      - echo "credential_source = EcsContainer" >> ~/.aws/config
+#      - echo "credential_source = EcsContainer" >> ~/.aws/config
       - cat ~/.aws/config
-      - aws sts get-caller-identity --profile anotheracc
+      - aws sts get-caller-identity
 
 
       - curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
