@@ -6,7 +6,7 @@ phases:
     commands:
       - mkdir -p ~/.aws/
       - echo "[profile anotheracc]" >> ~/.aws/config
-      - echo "role_arn = arn:aws:iam::$AWS_ACCOUNT_ID:role/ToolsAcctCodePipelineKubernetesRole" >> ~/.aws/config
+      - echo "role_arn = arn:aws:iam::$AWS_ACCOUNT_ID:role/codebuild-stockinfocodebuild-new--service-role" >> ~/.aws/config
       - echo "credential_source = EcsContainer" >> ~/.aws/config
       - cat ~/.aws/config
       - aws sts get-caller-identity --profile anotheracc
