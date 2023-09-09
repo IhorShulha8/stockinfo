@@ -4,9 +4,9 @@ phases:
   # steps:
   install:
     commands:
-      - curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+#      - curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
       - curl -sS -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/linux/amd64/kubectl
-      - chmod +x ./kubectl ./aws-iam-authenticator
+      - chmod +x ./kubectl #./aws-iam-authenticator
       - export PATH=$PWD/:$PATH
       - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
       - kubectl version --short --client
@@ -18,7 +18,7 @@ phases:
 #      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
 #      - export KUBECONFIG=$HOME/.kube/config
       - echo check config
-      - kubectl config view --minify
+#      - kubectl config view --minify
       - echo check kubectl access
       - kubectl get svc
 
