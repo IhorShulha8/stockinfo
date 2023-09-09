@@ -21,7 +21,7 @@ phases:
 #      - echo "role_arn = arn:aws:iam::421732516831:role/service-role/codebuild-stockinfocodebuild-new--service-role" >> ~/.aws/config
 #      - echo "credential_source = stockinfo" >> ~/.aws/config
       - cat ~/.aws/config
-      - aws sts get-caller-identity
+#      - aws sts get-caller-identity
 
 
       - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME
