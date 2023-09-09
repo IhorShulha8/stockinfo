@@ -31,6 +31,7 @@ phases:
       - cat ~/.kube/config
 
 #      - kubectl get svc
+      - sed -e "/command: aws/s?aws?$(which aws)?" -i ~/.kube/config
       - kubectl rollout restart deployment/stockinfo-deployment -n default
 cache:
   paths:
