@@ -21,7 +21,7 @@ phases:
       - echo check config
 #      - kubectl config view --minify
       - echo check kubectl access
-#      - kubectl get svc
+      - kubectl get svc
 
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
@@ -42,9 +42,9 @@ phases:
       #      - kubectl scale --replicas=1 deployment/stockinfo-deployment
       #      - kubectl rollout restart deployment stockinfo-deployment
 
-      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+#      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl rollout restart deployment/stockinfo-deployment -n default
-      - kubectl get svc --all-namespaces
+#      - kubectl get svc --all-namespaces
 cache:
   paths:
     - '/root/.m2/**/*'
