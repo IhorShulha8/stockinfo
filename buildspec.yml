@@ -4,6 +4,14 @@ phases:
   # steps:
   install:
     commands:
+      - mkdir -p ~/.aws/
+      - echo "[profile anotheracc]" >> ~/.aws/config
+      - echo "role_arn = arn:aws:iam::$AWS_ACCOUNT_ID:role/ToolsAcctCodePipelineKubernetesRole" >> ~/.aws/config
+      - echo "credential_source = EcsContainer" >> ~/.aws/config
+      - cat ~/.aws/config
+      - aws sts get-caller-identity --profile anotheracc
+
+
       - curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
       - curl -sS -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/linux/amd64/kubectl
       - chmod +x ./kubectl ./aws-iam-authenticator
@@ -34,16 +42,14 @@ phases:
 #      - echo Build started on `date`
 #      - mvn install
       - echo Building the Docker image...
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+#      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+#      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
     # steps:
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-      #      - kubectl scale --replicas=1 deployment/stockinfo-deployment
-      #      - kubectl rollout restart deployment stockinfo-deployment
+#      - echo Build completed on `date`
+#      - echo Pushing the Docker image...
+#      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 #      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl rollout restart deployment/stockinfo-deployment -n default
