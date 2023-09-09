@@ -43,7 +43,7 @@ phases:
       #      - kubectl rollout restart deployment stockinfo-deployment
 
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - kubectl rollout restart -f deployment/deployment.yml
+      - kubectl rollout restart deployment/stockinfo-deployment -n default
       - kubectl get svc --all-namespaces
 cache:
   paths:
