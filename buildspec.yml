@@ -29,8 +29,7 @@ phases:
       - aws sts get-caller-identity
       - aws eks --region us-east-1 update-kubeconfig --name stockinfo-app
       - cat ~/.kube/config
-      - kubectl get nodes
-      - kubectl get pods
+
 #      - kubectl get svc
       - kubectl rollout restart deployment/stockinfo-deployment -n default
 cache:
