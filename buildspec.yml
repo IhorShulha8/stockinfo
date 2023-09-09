@@ -6,7 +6,7 @@ phases:
     commands:
       - mkdir -p ~/.aws/
       - echo "$AWS_ACCOUNT_ID" >> ~/.aws/config
-      - echo "role_arn = arn:aws:iam::$AWS_ACCOUNT_ID:role/codebuild-stockinfocodebuild-new--service-role" >> ~/.aws/config
+      - echo "role_arn = arn:aws:iam::$AWS_ACCOUNT_ID:Ruph/codebuild-stockinfocodebuild-new--service-role" >> ~/.aws/config
       - echo "credential_source = stockinfo" >> ~/.aws/config
       - cat ~/.aws/config
       - aws sts get-caller-identity
