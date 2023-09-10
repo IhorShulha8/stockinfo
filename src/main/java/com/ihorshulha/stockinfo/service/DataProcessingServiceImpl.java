@@ -49,7 +49,7 @@ public class DataProcessingServiceImpl implements DataProcessingService {
     public Mono<Void> processingStockData() {
         return Flux.fromIterable(tasks)
                 .flatMap(s -> apiClient.callToStockApi(getTask()))
-                .onErrorContinue((error, obj) -> log.error("error:[{}]", error.getLocalizedMessage()))
+                .onErrorContinue((error, obj) -> log.error("[{}]", error.getLocalizedMessage()))
                 .map(stockMapper::mapToStockDto)
                 .map(customRepository::saveStock)
                 .map(Mono::subscribe)
