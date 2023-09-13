@@ -2,3 +2,9 @@ service:
   number-of-companies: 3
 scheduling:
   enable: false
+
+api:
+  external:
+    ref-data-url: https://api.iex.cloud/v1/data/CORE/REF_DATA?token={token}
+    stock-data-url: https://api.iex.cloud/v1/data/core/quote/{symbol}?token={token}
+    token: pk_44dd36d9cde44cd3a7eba76f75b73def

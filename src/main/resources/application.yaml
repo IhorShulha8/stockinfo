@@ -23,18 +23,18 @@ spring:
   codec:
     max-in-memory-size: 10MB
   r2dbc:
-    url: r2dbc:postgresql://${rds.db.url}
-    username: ${rds.db.username}
-    password: ${rds.db.password}
+    url: r2dbc:postgresql://${local.db.url}
+    username: ${local.db.username}
+    password: ${local.db.password}
     pool:
       enabled: true
       initial-size: 10
       max-size: 20
   flyway:
-    url: jdbc:postgresql://${rds.db.url}
+    url: jdbc:postgresql://${local.db.url}
     locations: classpath:db/migration
-    user: ${rds.db.username}
-    password: ${rds.db.password}
+    user: ${local.db.username}
+    password: ${local.db.password}
     baseline-on-migrate: true
 
 api:
